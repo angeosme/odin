@@ -9,18 +9,26 @@ typedef struct
 {
     int couleur;
     int chiffre;
+    int utilisee; //0 pas utilsée et 1 utilisée
 }Carte;
+
+typedef struct
+{
+    Carte carte[NB_CARTES_MAX];
+}Paquet;
 
 typedef struct
 {
     char nom[50];
     int nb_cartes;
-    Carte carte[TAILLE_MAX_MAIN][NB_COULEURS];
+    Carte main[TAILLE_MAX_MAIN];
 }Joueur;
 
 typedef struct
 {
     Joueur joueur[NB_JOUEUR_MAX];
+    int nb_joueur;
+    Paquet paquet;
     int conditions_fin_tour;
     int conditions_fin_manche;
 }Partie;
