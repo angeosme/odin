@@ -3,9 +3,13 @@
 #include <time.h>
 #include <windows.h>
 #include "biblio.h"
+#include <conio.h>
 
+/*
+======================================================================
 //DESSIN GENERAL
-
+======================================================================
+*/
 void positionner_curseur(int ligne, int colonne)
 {
     HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);//permet de déclarer la variable "hstdout" qui fait référénce à la console
@@ -121,7 +125,22 @@ void dessiner_carte_du_jeu(int ligne,int colonne, int couleur, int valeur_carte)
     color(15, 0);
 }
 
-//DESSIN MENU
+/*
+======================================================================
+OPTION ET MENU
+/!\ programmes empruntés, modifiés et adaptés du TP n°2
+======================================================================
+*/
+
+void todo(char *s)
+{
+    system("cls");
+    positionner_curseur(CENTRE_MENU+12, MILLIEU_MENU);
+    printf("fonctionnalité pas encore programmée, %s",s);
+    positionner_curseur(CENTRE_MENU+14, MILLIEU_MENU);
+
+    system("PAUSE");
+}
 
 void dessiner_logo_odin(int ligne, int colonne)
 {
@@ -179,5 +198,328 @@ void dessiner_logo_odin(int ligne, int colonne)
     dessiner_formes(ligne +5, colonne+76, 15, 15 ,6);
 
     // =================================================
+}
+
+
+void menu_principal()
+{
+    char menu[4][58]= {"   Jouer !                                            ","   Regles                                             ","   Credits                                            ",
+                        "   Quitter                                            ",};
+    int choix=0; // numéro de l'option choisie dans le menu
+    int frappe=0; //permet de stocker le code de la touche clavier
+
+    int i;
+
+
+        choix=0;frappe=0;
+        system("cls");
+        dessiner_logo_odin(4, MILLIEU_MENU-12);
+        positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
+        printf(" ___________    Bienvenue dans le jeu ODIN   __________\n");
+        positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        for(i=0; i<4; i++)
+        {
+            //color(2,0);
+            positionner_curseur(3+i+CENTRE_MENU,MILLIEU_MENU);
+            printf("|%s|\n",menu[i]);
+            //color(15,0);
+
+        }
+        positionner_curseur(7+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(8+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(9+CENTRE_MENU,MILLIEU_MENU);
+        printf("|______________________________________________________|\n");
+
+        positionner_curseur(3+CENTRE_MENU,MILLIEU_MENU);
+        color(0,15);
+        printf("|%s|\n",menu[0]);
+        color(15,0);
+        positionner_curseur(19+CENTRE_MENU,MILLIEU_MENU);
+        printf("\n");
+
+        while(frappe!=13) // tant qu'on a pas appuyer sur la touche ECHAP
+        {
+            //printf("e");
+            if (kbhit()) //si on a appuyer sur une touche du clavier
+            {
+
+
+                frappe=getch(); // on récupère le code de la touche sur laquelle on a appuyée
+
+
+                if(frappe==72) //75 est le code de la flèche directionnelle vers le haut
+                {
+
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU); // positionne le curseur au choix courant
+                    color(15,0); // met la couleur du texte en blanc et celle du fond en noir
+                    printf("|%s|",menu[choix]); // On réaffiche le choix courant avec les couleurs préalablement choisies, une manière de le désélectionner
+                    choix--; // on décrémebte le numéro de l'option
+                    if (choix ==-1) choix =3; // les options sont numérotées de 0 à 11
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU);// positionne le curseur au choix juste dessus du précédent
+                    color(0,15);// met la couleur du texte en noir et celle du fond en blanc
+                    printf("|%s|\n",menu[choix]);// On réaffiche le nouveau choix  avec les couleurs préalablement choisies, une manière de le séléctionner
+                    color(15,0);
+                }
+                if(frappe==80) //80 est le code de la flèche directionnelle vers le bas
+                {
+
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU);
+                    color(15,0);
+                    printf("|%s|",menu[choix]);
+                    choix++;
+                    if (choix ==4) choix =0;
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU);
+                    color(0,15);
+                    printf("|%s|",menu[choix]);
+                    color(15,0);
+                }
+
+            }
+            positionner_curseur(19+CENTRE_MENU,MILLIEU_MENU);
+
+        }
+
+        choix++;
+        switch (choix)
+        {
+        case 1 :
+            menu_jouer();
+            break;
+
+        case 2 :
+            //printf("implémenter et insérer la fonction : \n void afficher_list(S_Etudiant tab[], int nb) \n");
+            todo(" vous devez implémenter et insérer la fonction : \n\n void afficher_list(S_Etudiant tab[], int nb) \n\n\n");
+            break;
+        case 3:
+            todo(" vous devez implémenter et insérer les fonctions : \n\n int filtre_statut(int s,S_Etudiant Tab1[],int nb1,S_Etudiant Tab2[])\n\n void afficher_list(S_Etudiant tab[], int nb)  \n\n\n");
+            break;
+
+        case 4:
+            positionner_curseur(CENTRE_MENU+12, MILLIEU_MENU);
+            printf("******************    Au revoir    ******************");
+            positionner_curseur(CENTRE_MENU+14, MILLIEU_MENU);
+            Sleep(100);
+            system("PAUSE");
+            break;
+
+        default :
+            printf("Choix invalide ! merci de taper une valeur entre 1 et 12 ! \n");
+            system("PAUSE");
+            break;
+    }
+
+}
+
+
+void menu_jouer()
+{
+    char menu[5][58]= {"   Partie standard                                    ","   Partie courte                                      ","   Partie longue                                      ",
+                       "   Partie express                                     ","   Retour                                             ",};
+    int choix=0; // numéro de l'option choisie dans le menu
+    int frappe=0; //permet de stocker le code de la touche clavier
+
+    int i;
+
+
+        choix=0;frappe=0;
+        system("cls");
+        dessiner_logo_odin(4, MILLIEU_MENU-12);
+        positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
+        printf(" ______________    Choix du mode de jeu   _____________\n");
+        positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        for(i=0; i<6; i++)
+        {
+            //color(2,0);
+            positionner_curseur(3+i+CENTRE_MENU,MILLIEU_MENU);
+            printf("|%s|\n",menu[i]);
+            //color(15,0);
+
+        }
+        positionner_curseur(8+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(9+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(10+CENTRE_MENU,MILLIEU_MENU);
+        printf("|______________________________________________________|\n");
+
+        positionner_curseur(3+CENTRE_MENU,MILLIEU_MENU);
+        color(0,15);
+        printf("|%s|\n",menu[0]);
+        color(15,0);
+        positionner_curseur(19+CENTRE_MENU,MILLIEU_MENU);
+        printf("\n");
+
+        while(frappe!=13) // tant qu'on a pas appuyer sur la touche ECHAP
+        {
+            //printf("e");
+            if (kbhit()) //si on a appuyer sur une touche du clavier
+            {
+
+
+                frappe=getch(); // on récupère le code de la touche sur laquelle on a appuyée
+
+
+                if(frappe==72) //75 est le code de la flèche directionnelle vers le haut
+                {
+
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU); // positionne le curseur au choix courant
+                    color(15,0); // met la couleur du texte en blanc et celle du fond en noir
+                    printf("|%s|",menu[choix]); // On réaffiche le choix courant avec les couleurs préalablement choisies, une manière de le désélectionner
+                    choix--; // on décrémebte le numéro de l'option
+                    if (choix ==-1) choix =4; // les options sont numérotées de 0 à 11
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU);// positionne le curseur au choix juste dessus du précédent
+                    color(0,15);// met la couleur du texte en noir et celle du fond en blanc
+                    printf("|%s|\n",menu[choix]);// On réaffiche le nouveau choix  avec les couleurs préalablement choisies, une manière de le séléctionner
+                    color(15,0);
+                }
+                if(frappe==80) //80 est le code de la flèche directionnelle vers le bas
+                {
+
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU);
+                    color(15,0);
+                    printf("|%s|",menu[choix]);
+                    choix++;
+                    if (choix ==5) choix =0;
+                    positionner_curseur(choix+3+CENTRE_MENU,MILLIEU_MENU);
+                    color(0,15);
+                    printf("|%s|",menu[choix]);
+                    color(15,0);
+                }
+
+            }
+            positionner_curseur(19+CENTRE_MENU,MILLIEU_MENU);
+
+        }
+
+        choix++;
+        switch (choix)
+        {
+        case 1 :
+            todo(" vous devez implémenter et insérer la fonction : \n\n void afficher_list(S_Etudiant tab[], int nb) \n\n\n");
+            break;
+
+        case 2 :
+            //printf("implémenter et insérer la fonction : \n void afficher_list(S_Etudiant tab[], int nb) \n");
+            todo(" vous devez implémenter et insérer la fonction : \n\n void afficher_list(S_Etudiant tab[], int nb) \n\n\n");
+            break;
+        case 3:
+            todo(" vous devez implémenter et insérer les fonctions : \n\n int filtre_statut(int s,S_Etudiant Tab1[],int nb1,S_Etudiant Tab2[])\n\n void afficher_list(S_Etudiant tab[], int nb)  \n\n\n");
+            break;
+
+        case 4:
+            todo(" vous devez implémenter et insérer les fonctions : \n\n int filtre_statut(int s,S_Etudiant Tab1[],int nb1,S_Etudiant Tab2[])\n\n void afficher_list(S_Etudiant tab[], int nb)  \n\n\n");
+            break;
+
+        case 5:
+            menu_principal();
+            break;
+
+        default :
+            printf("Choix invalide ! merci de taper une valeur entre 1 et 12 ! \n");
+            system("PAUSE");
+            break;
+    }
+
+}
+
+/*
+======================================================================
+TRANSITIONS
+======================================================================
+*/
+
+void transition_la_partie_va_commencer()
+{
+        system("cls");
+        positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
+        color(2,0);
+        printf(" ____________    LA PARTIE VA COMMENCER !  ____________\n");
+        color(15,0);
+        positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(4+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(5+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(6+CENTRE_MENU,MILLIEU_MENU);
+        color(2,0);
+        printf("|______________________________________________________|\n");
+
+        for(int i = 0; i<4; i++)
+        {
+            positionner_curseur(3+CENTRE_MENU,MILLIEU_MENU);
+            printf("|                          %d                           |\n",3-i);
+            Sleep(1000);
+        }
+        color(15,0);
+        system("cls");
+}
+
+void transition_retour_au_menu_principal()
+{
+        system("cls");
+        positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
+        color(4,0);
+        printf(" ____________    RETOUR AU MENU PRINCIPAL  ____________\n");
+        color(15,0);
+        positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(4+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(5+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(6+CENTRE_MENU,MILLIEU_MENU);
+        color(4,0);
+        printf("|______________________________________________________|\n");
+
+        for(int i = 0; i<4; i++)
+        {
+            positionner_curseur(3+CENTRE_MENU,MILLIEU_MENU);
+            printf("|                          %d                           |\n",3-i);
+            Sleep(1000);
+        }
+        color(15,0);
+        system("cls");
+}
+
+void transition_joueur_suivant(char nom_joueur[])
+{
+        system("cls");
+        positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
+        printf(" Au tour de %s de jouer !\n",nom_joueur);
+        positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
+        printf(" ______________________________________________________\n");
+        color(15,0);
+        positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(3+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+
+        color(1,0);
+        positionner_curseur(4+CENTRE_MENU,MILLIEU_MENU);
+        printf("|         *Appuyez sur une touche quelconque*          |\n");
+        color(15,0);
+
+        positionner_curseur(5+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(6+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(7+CENTRE_MENU,MILLIEU_MENU);
+
+        printf("|______________________________________________________|\n");
+        system("PAUSE");
+        system("cls");
 }
 

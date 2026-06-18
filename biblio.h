@@ -1,47 +1,70 @@
-#ifndef ODIN_H
-#define ODIN_H
+#ifndef BIBLIO_H_INCLUDED
+#define BIBLIO_H_INCLUDED
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <windows.h>
+#include <conio.h>
+#endif // BIBLIO_H_INCLUDED
 
-#define TAILLE_MAX_MAIN 9
-#define NB_COULEURS 6
-#define NB_JOUEUR_MAX 6
-#define NB_CARTES_MAX 54
-typedef struct
-{
-    int couleur;
-    int chiffre;
-    int utilisee_tri; //0 pas utilsée et 1 utilisée
-}Carte;
+// DEFINES
 
-typedef struct
-{
-    Carte carte[NB_CARTES_MAX];
-}Paquet;
+// position du centre pour le menu
+#define MILLIEU_MENU 90
+#define CENTRE_MENU 50
 
-typedef struct
-{
-    char nom[50];
-    int nb_cartes;
-    Carte main[TAILLE_MAX_MAIN];
-}Joueur;
+#define PAS_ENTRE_CARTES 16
 
-typedef struct
-{
-    Carte carte_posee[TAILLE_MAX_MAIN];
-    int nb_carte_millieu;
-}Pile_millieu;
+#define BLEU 1
+#define ROUGE 4
+#define ROSE 13
+#define VERT 2
+#define MARRON 6
+#define JAUNE 14
 
-typedef struct
-{
-    Joueur joueur[NB_JOUEUR_MAX];
-    int nb_joueur;
-    Paquet paquet;
-    Pile_millieu pile_millieu;
-    int conditions_fin_tour;
-    int conditions_fin_manche;
-}Partie;
+// STRUCTURES
 
-void initialiser_cartes(Carte carte[TAILLE_MAX_MAIN][NB_COULEURS]);
-void distribuer_carte(Partie *partie);
-void demande_carte_a_jouer();
-int jouer_cartes(int choix[TAILLE_MAX_MAIN], int nb_cartes_jouees, Joueur *joueur, Carte carte_jouee[TAILLE_MAX_MAIN], int nb_carte_millieu);
-#endif
+typedef struct {
+
+
+
+} Paquet;
+
+/*
+======================================================================
+AFFICHAGE ET INTERFACE
+======================================================================
+*/
+
+// SOUS PROGRAMMES ELEMENT CONCEPTUELS DE L'AFFICHAGE AVEC CARTE JEU BASIQUE
+
+void positionner_curseur(int ligne, int colonne);
+
+void plein_ecran();
+
+void dessiner_formes(int ligne,int colonne,int c,int lg, int la);
+
+void dessiner_pointilles(int ligne,int colonne,int c,int lg, int la);
+
+void dessiner_fond_carte(int ligne, int colonne);
+
+void dessiner_carte_du_jeu(int ligne,int colonne, int couleur, int valeur_carte);
+
+
+// SOUS PROGRAMMES MENU
+
+void dessiner_logo_odin(int ligne, int colonne);
+
+void menu_principal();
+
+void menu_jouer();
+
+void todo(char *s);
+
+// SOUS PROGRAMMES TRANSITION
+
+void transition_la_partie_va_commencer();
+
+void transition_retour_au_menu_principal();
+
+void transition_joueur_suivant(char nom_joueur[]);
