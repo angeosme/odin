@@ -1,18 +1,10 @@
-#ifndef BIBLIO_H_INCLUDED
-#define BIBLIO_H_INCLUDED
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include <windows.h>
-#include <conio.h>
-#endif // BIBLIO_H_INCLUDED
-//version 19/06/2026 19h49
-/*
-======================================================================
-DEFINES
-======================================================================
-*/
+#ifndef BIBLIO_H
+#define BIBLIO_H
 
+#define TAILLE_MAX_MAIN 9
+#define NB_COULEURS 6
+#define NB_JOUEUR_MAX 6
+#define NB_CARTES_MAX 54
 // position du centre pour le menu :
 #define MILLIEU_MENU 90
 #define CENTRE_MENU 50
@@ -26,32 +18,59 @@ DEFINES
 #define VERT 2
 #define MARRON 6
 #define JAUNE 14
+typedef struct
+{
+    int couleur;
+    int chiffre;
+    int utilisee_tri; //0 pas utilsée et 1 utilisée
+}Carte;
 
-/*
-======================================================================
-STRUCTURES
-======================================================================
-*/
-typedef struct {
+typedef struct
+{
+    Carte carte[NB_CARTES_MAX];
+}Paquet;
 
-
-
-} Paquet;  //en cours de dvlp
-
-typedef struct {
-
+typedef struct
+{
+    char nom[50];
     int numero_joueur;
-    char nom_joueur[50];
+    int nb_cartes;
+    Carte main[TAILLE_MAX_MAIN+1]; //a cause de la recup de la carte au milieu
+    int nb_cartes_jouees;
+    int choix[TAILLE_MAX_MAIN];    //passe par choix
+    Carte carte_jouee[TAILLE_MAX_MAIN];  //puis devient carte_jouee
+}Joueur;
 
-} Joueur;  //structure joueurs simplifiée pour test
+typedef struct
+{
+    Carte carte_posee[TAILLE_MAX_MAIN];
+    int nb_carte_milieu;
+    int num_final[TAILLE_MAX_MAIN];
+}Pile_milieu;
 
-/*
-======================================================================
-AFFICHAGE ET INTERFACE
-======================================================================
-*/
+typedef struct
+{
+    Joueur joueur[NB_JOUEUR_MAX];
+    int nb_joueur;
+    Paquet paquet;
+    Pile_milieu pile_milieu;
+    int conditions_fin_tour;
+    int conditions_fin_manche;
+}Partie;
 
-// SOUS PROGRAMMES ELEMENT CONCEPTUELS DE L'AFFICHAGE AVEC CARTE JEU BASIQUE
+void initialiser_cartes(Carte carte[TAILLE_MAX_MAIN][NB_COULEURS]);
+
+void distribuer_carte_depart(Partie *partie);
+
+void demande_carte_a_jouer();
+
+void  jouer_cartes( Partie *partie);
+
+void poser_au_millieu(Partie *partie, int nb_cartes_jouees, Carte carte_jouee[TAILLE_MAX_MAIN]);
+
+int verif_conditions_de_jeu(int nb_cartes_jouees, Partie partie);
+
+void calcul_num_pose(Partie partie);
 
 void positionner_curseur(int ligne, int colonne);
 
@@ -74,7 +93,10 @@ void menu_principal();
 
 void menu_jouer();
 
+void menu_complet();
+
 void todo(char *s);
+
 
 // SOUS PROGRAMMES TRANSITION
 
@@ -90,4 +112,10 @@ void validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[]);
 
 int entree_du_nombre_de_joueurs();
 
+void demander_prenom();
+
 void entree_des_informations_des_joueurs(Joueur *ensemble_des_joueurs, int nb_joueurs);
+
+// boucle principale
+void tour_de_jeu(Partie *partie);
+#endif
