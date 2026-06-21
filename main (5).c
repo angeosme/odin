@@ -4,8 +4,7 @@
 #include <windows.h>
 #include "biblio.h"
 #include <conio.h>
-//version du 21/06/2026  14h01
-
+//version 19/06/2026 19h49
 /*
 ===================================================================
 TEST AFFICHAGE MAIN JOUEUR (ALÉATOIRE)
@@ -41,12 +40,12 @@ TEST AFFICHAGE MAIN JOUEUR (ALÉATOIRE)
 
 /*
 ===================================================================
-TEST MENU PRINCIPAL AVEC CERTAINES ENTRÉES ET MODE DE JEU
+TEST MENU PRINCIPAL AVEC CERTAINES ENTRÉES
 ===================================================================
 */
 
 
-int main()
+/*int main()
 {
     plein_ecran();
     menu_principal();
@@ -57,7 +56,7 @@ int main()
    // positionner_curseur(90,6);
     return 0;
 }
-
+*/
 
 
 
@@ -72,11 +71,9 @@ int main ()
 {
     plein_ecran();
     transition_la_partie_va_commencer();
-    transition_joueur_suivant("Dany Hulot");
-    transition_manche_suivante();
     transition_retour_au_menu_principal();
 
-
+    transition_joueur_suivant("Dany Hulot");
 
     return 0;
 }
@@ -108,21 +105,11 @@ TEST ENTRÉES NOM JOUEURS
 }
 */
 
-
-/*
-===================================================================
-TEST d'ANTONIN
-===================================================================
-*/
-/*
 int main ()
 {
     plein_ecran();
     Partie partie;
-    partie.nb_joueur=1;
-    //menu_complet();
+    menu_complet(&partie);
+    system("cls");
     tour_de_jeu(&partie);
 }
-*/
-
-

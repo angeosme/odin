@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+#include <string.h>
 #include "biblio.h"
 #include <conio.h>
 
@@ -23,6 +24,7 @@ void initialiser_paquet(Paquet *p)
 
 void distribuer_carte_depart(Partie *partie)
 {
+    srand(time(NULL));
     int j=0;
     for (int k=0; k<partie->nb_joueur; k++)  //defini le nb de cartes des joueurs a 0
     {
@@ -50,18 +52,16 @@ void distribuer_carte_depart(Partie *partie)
     }
 }
 
-void demande_carte_a_jouer(Partie *partie)
+void demande_carte_a_jouer(Partie *partie, int m)
 {
     int saisie_valide=0;
-    Pile_milieu pile;
-    pile.nb_carte_milieu=0;
     int i;
     while (1)
     {
          positionner_curseur(120,0);
          printf("combien de cartes veux tu jouer ? (si tu es le 1er a jouer, joue une seule carte)");
-         scanf("%d",&partie->joueur->nb_cartes_jouees);
-         if (partie->joueur->nb_cartes_jouees>=0 && partie->joueur->nb_cartes_jouees<=TAILLE_MAX_MAIN && partie->joueur->nb_cartes_jouees>=pile.nb_carte_milieu && partie->joueur->nb_cartes_jouees<=pile.nb_carte_milieu+1)
+         scanf("%d",&partie->joueur[m].nb_cartes_jouees);
+         if (partie->joueur[m].nb_cartes_jouees>=0 && partie->joueur[m].nb_cartes_jouees<=TAILLE_MAX_MAIN && partie->joueur[m].nb_cartes_jouees>=partie->pile_milieu.nb_carte_milieu && partie->joueur[m]->nb_cartes_jouees<=partie->pile_milieu.nb_carte_milieu+1)
             {
                break;
             }
@@ -69,12 +69,12 @@ void demande_carte_a_jouer(Partie *partie)
     }
     while (saisie_valide==0)
     {
-        for (i=0; i<partie->joueur->nb_cartes_jouees; i++)
+        for (i=0; i<partie->joueur[m].nb_cartes_jouees; i++)
         {
             printf("carte numero %d ?",i);  //demande quelles cartes ?
-            scanf("%d",&partie->joueur->choix[i]);
+            scanf("%d",&partie->joueur[m].choix[i]);
 
-            if (partie->joueur->choix[i]-1>=0 && partie->joueur->choix[i]-1<=partie->joueur->nb_cartes) //verif que la saisie est bonne
+            if (partie->joueur[m].choix[i]-1>=0 && partie->joueur[m].choix[i]-1<=partie->joueur[m].nb_cartes) //verif que la saisie est bonne
             {
                saisie_valide=1;
             }
@@ -82,55 +82,42 @@ void demande_carte_a_jouer(Partie *partie)
     }
 }
 
-void jouer_cartes( Partie *partie)
+void jouer_cartes( Partie *partie, int m)
 {
     int choix_carte_recuperee;
-    if (partie->pile_milieu.nb_carte_milieu>=1)
+    if (partie->pile_milieu.nb_carte_milieu>0)
     {
         printf("quelle carte veux tu prendre dans la pile du milieu (position de la carte et non pas sa valeur)");
         scanf("%d",&choix_carte_recuperee);
-        partie->joueur->main[TAILLE_MAX_MAIN+1]=partie->pile_milieu.carte_posee[choix_carte_recuperee];
+        partie->joueur[m].main[TAILLE_MAX_MAIN+1]=partie->pile_milieu.carte_posee[choix_carte_recuperee];
     }
     //--------------------------------------------------
     int a_joue[TAILLE_MAX_MAIN]={0};  //utile pour faire la nouvelle main après avoir jouer
-    for (int i=0; i<partie->joueur->nb_cartes_jouees; i++)
+    for (int i=0; i<partie->joueur[m].nb_cartes_jouees; i++)
     {
-        a_joue[partie->joueur->choix[i]-1]=1;
-        partie->joueur->carte_jouee[i]=partie->joueur->main[partie->joueur->choix[i]-1];
+        a_joue[partie->joueur[m].choix[i]-1]=1;
+        partie->joueur[m].carte_jouee[i]=partie->joueur[m].main[partie->joueur[m].choix[i]-1];
         partie->pile_milieu.nb_carte_milieu++;
-        partie->pile_milieu.carte_posee[i]=partie->joueur->main[partie->joueur->choix[i]-1];
+        partie->pile_milieu.carte_posee[i]=partie->joueur[m].main[partie->joueur[m].choix[i]-1];
     }
     //------------------------------------------
      int nouvelle_taille_main=0;
-     for (int j = 0; j < partie->joueur->nb_cartes; j++)
+     for (int j = 0; j < partie->joueur[partie->joueur->numero_joueur].nb_cartes; j++)
     {
         if(a_joue[j]==0)    //si la carte est pas jouée alors... si elle est jouée, pas d'action donc nouvelle taille main se decale de j, donc réordonne la main
         {
-            partie->joueur->main[nouvelle_taille_main]=partie->joueur->main[j];
+            partie->joueur[m].main[nouvelle_taille_main]=partie->joueur[m].main[j];
             nouvelle_taille_main++;
         }
     }
-    partie->joueur->nb_cartes=nouvelle_taille_main +1; // +1 car il choisit une carte deja dans la pile
-
-//-------------------------------------------------------affichage milieu
-    int ecartement_milieu=10;
-    for (int c=0; c<partie->joueur->nb_cartes_jouees; c++)
-    {
-        dessiner_carte_du_jeu( 15,ecartement_milieu, partie->pile_milieu.carte_posee[c].couleur, partie->pile_milieu.carte_posee[c].chiffre);
-        ecartement_milieu=ecartement_milieu+PAS_ENTRE_CARTES;
-    }
-
-
-
+    partie->joueur[m].nb_cartes=nouvelle_taille_main +1; // +1 car il choisit une carte deja dans la pile
 }
 
-void poser_au_millieu(Partie *partie, int nb_cartes_jouees, Carte carte_jouee[TAILLE_MAX_MAIN])
+void poser_au_millieu(Partie *partie)
 {
-    partie->pile_milieu.nb_carte_milieu=nb_cartes_jouees;
-    //----------------------------------
-    for (int i=0; i<nb_cartes_jouees; i++)
+    for (int i=0; i<partie->joueur[partie->joueur->numero_joueur].nb_cartes_jouees; i++)
     {
-        partie->pile_milieu.carte_posee[i]=carte_jouee[i];
+        partie->pile_milieu.carte_posee[i]=partie->joueur[partie->joueur->numero_joueur].carte_jouee[i];
     }
 }
 
@@ -284,6 +271,16 @@ void dessiner_carte_du_jeu(int ligne,int colonne, int couleur, int valeur_carte)
     color(15, 0);
 }
 
+void afficher_carte_milieu(Partie *partie, int m)
+{
+    int ecartement_milieu=10;
+            for (int c=0; c<partie->joueur[m].nb_cartes_jouees; c++)
+            {
+                dessiner_carte_du_jeu( 20,ecartement_milieu, partie->pile_milieu.carte_posee[c].couleur, partie->pile_milieu.carte_posee[c].chiffre);
+                ecartement_milieu=ecartement_milieu+PAS_ENTRE_CARTES;
+            }
+}
+
 /*
 ======================================================================
 OPTION ET MENU
@@ -359,7 +356,7 @@ void dessiner_logo_odin(int ligne, int colonne)
     // =================================================
 }
 
-void menu_principal()
+void menu_principal(Partie *partie)
 {
     char menu[4][58]= {"   Jouer !                                            ","   Regles                                             ","   Credits                                            ",
                         "   Quitter                                            ",};
@@ -446,7 +443,7 @@ void menu_principal()
         switch (choix)
         {
         case 1 :
-            menu_jouer();
+            menu_jouer(partie);
             break;
 
         case 2 :
@@ -473,7 +470,7 @@ void menu_principal()
 
 }
 
-void menu_jouer()
+void menu_jouer(Partie *partie)
 {
     char menu[5][58]= {"   Partie standard                                    ","   Partie courte                                      ","   Partie longue                                      ",
                        "   Partie express                                     ","   Retour                                             ",};
@@ -560,23 +557,28 @@ void menu_jouer()
         switch (choix)
         {
         case 1 :
-            validation_du_mode_de_jeu_chosi("Partie standard");
+            strcpy(partie->mode_de_jeu,"Partie standard");
+            validation_du_mode_de_jeu_chosi(partie);
 
             break;
 
         case 2 :
-            validation_du_mode_de_jeu_chosi("Partie courte");
+            strcpy(partie->mode_de_jeu,"Partie courte");
+            validation_du_mode_de_jeu_chosi(partie);
             break;
         case 3:
-            validation_du_mode_de_jeu_chosi("Partie longue");
+
+            strcpy(partie->mode_de_jeu,"Partie longue");
+            validation_du_mode_de_jeu_chosi(partie);
             break;
 
         case 4:
-            validation_du_mode_de_jeu_chosi("Partie express");
+            strcpy(partie->mode_de_jeu,"Partie express");
+            validation_du_mode_de_jeu_chosi(partie);
             break;
 
         case 5:
-            menu_principal();
+            menu_principal(partie);
             break;
 
         default :
@@ -593,7 +595,7 @@ ENTRÉE DES INFORMATION DE PARTIE
 ======================================================================
 */
 
-void validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[])
+void validation_du_mode_de_jeu_chosi(Partie *partie)
 {
     char menu[5][58]= {"   Continuer                                          ","   Retour                                             "};
     int choix=0; // numéro de l'option choisie dans le menu
@@ -607,7 +609,7 @@ void validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[])
         //dessiner_logo_odin(4, MILLIEU_MENU-12);
         positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
         color(1,0);
-        printf(" Vous avez choisi le mode %s, continuer ?\n", nom_mode_de_jeu);
+        printf(" Vous avez choisi le mode %s, continuer ?\n", &partie->mode_de_jeu[50]);
         color(15,0);
         positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
         printf("|                                                      |\n");
@@ -681,11 +683,11 @@ void validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[])
         switch (choix)
         {
         case 1 :
-            demander_prenom();
+            demander_prenom(partie);
              break;
 
         case 2 :
-            menu_jouer();
+            menu_jouer(partie);
             break;
 
         default :
@@ -695,9 +697,8 @@ void validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[])
     }
 }
 
-int entree_du_nombre_de_joueurs()  //mettre structure joueur ici
+int entree_du_nombre_de_joueurs(Partie *partie)  //mettre structure joueur ici
 {
-    int nb_joueurs;
     system("cls");
     positionner_curseur(CENTRE_MENU-20,MILLIEU_MENU);
     color(0,15);
@@ -707,23 +708,22 @@ int entree_du_nombre_de_joueurs()  //mettre structure joueur ici
     printf(" |                (Minimum 2, Maximum 6)              |\n");
     positionner_curseur(CENTRE_MENU-18,MILLIEU_MENU);
     printf(" |->                                                  |\n");
-
         do
         {
         positionner_curseur(CENTRE_MENU-18,MILLIEU_MENU+5);
-        scanf("%d",&nb_joueurs);             //entrée du nombre de joueurs souhaité, la boucle permet de ne pas entrer des valeurs invalides
+        scanf("%d",&partie->nb_joueur);             //entrée du nombre de joueurs souhaité, la boucle permet de ne pas entrer des valeurs invalides
         }
-        while(nb_joueurs>6 || nb_joueurs<2);
+        while(partie->nb_joueur>6 || partie->nb_joueur<2);
 
-    return nb_joueurs;
+    return partie->nb_joueur;
 
 }
 
-void entree_des_informations_des_joueurs(Joueur *ensemble_des_joueurs, int nb_joueurs)
+void entree_des_informations_des_joueurs(Partie *partie)
 {
     int a;
     a=CENTRE_MENU-17;
-    for(int i = 0; i<nb_joueurs; i ++)
+    for(int i = 0; i<partie->nb_joueur; i ++)
     {
         positionner_curseur(a,MILLIEU_MENU);
         color(0,15);
@@ -732,8 +732,8 @@ void entree_des_informations_des_joueurs(Joueur *ensemble_des_joueurs, int nb_jo
         positionner_curseur(a+1,MILLIEU_MENU);
         printf(" |->                                                  |\n");
         positionner_curseur(a+1,MILLIEU_MENU+5);
-        scanf("%s",&ensemble_des_joueurs[i].nom[50]);
-        ensemble_des_joueurs[i].numero_joueur=i+1;
+        scanf("%s",&partie->joueur[i].nom);
+        partie->joueur[i].numero_joueur=i;
         a=a+2;
     }
     plein_ecran();
@@ -841,10 +841,10 @@ void transition_joueur_suivant(char nom_joueur[])
 }
 //-----------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
-void menu_complet()
+void menu_complet(Partie *partie)
 {//-------------------------menu d'entrée
     plein_ecran();
-    menu_principal();
+    menu_principal(partie);
 
     dessiner_logo_odin(1,70);
     positionner_curseur(90,6);
@@ -853,17 +853,15 @@ void menu_complet()
 //-----------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
-void demander_prenom()
+void demander_prenom(Partie *partie)
 {
-    Joueur *ensemble_des_joueurs;
-    int nb_joueurs;
     plein_ecran();
 
-    nb_joueurs=entree_du_nombre_de_joueurs();
+    partie->nb_joueur=entree_du_nombre_de_joueurs(partie);
 
-    ensemble_des_joueurs = malloc(nb_joueurs*sizeof(Joueur));
+    entree_des_informations_des_joueurs(partie);
 
-    entree_des_informations_des_joueurs(ensemble_des_joueurs, nb_joueurs);
+
 
     /*transition_la_partie_va_commencer();
     printf("Il y a %d joueurs, les voici :\n",nb_joueurs);
@@ -880,20 +878,34 @@ void tour_de_jeu(Partie *partie)
     int j;
     int c;
     int nb_cartes_jouees;
+    int decalage=20;
     Paquet p;
     initialiser_paquet(&partie->paquet);
     distribuer_carte_depart(partie);
-
-        for ( j=0; j< partie->nb_joueur; j++)
+    partie->joueur[partie->joueur->numero_joueur].nb_cartes_jouees=0;
+    partie->pile_milieu.nb_carte_milieu=0;
+//-------------------------------------------------------------afficher main du joueur
+    while (1)
+    {
+         for ( j=0; j<partie->nb_joueur; j++)
         {
-            for (c=0; c<9; c++) //ecartement des cartes
+            //positionner_curseur(decalage, 0);
+            //decalage=decalage+ESPACE_ENTRE_TOURS;
+            system("cls");
+            ecartement=0;
+            for (c=0; c<partie->joueur[j].nb_cartes; c++) //ecartement des cartes
             {
 
-                dessiner_carte_du_jeu( 34, ecartement, partie->joueur[j].main[c].couleur, partie->joueur[j].main[c].chiffre);
+                dessiner_carte_du_jeu( 50, ecartement, partie->joueur[j].main[c].couleur, partie->joueur[j].main[c].chiffre);
                 ecartement=ecartement+PAS_ENTRE_CARTES;
             }
+            partie->pile_milieu.nb_carte_milieu=0;
+            afficher_carte_milieu(partie);
             demande_carte_a_jouer(partie);
             jouer_cartes(partie);
+           // poser_au_millieu(partie);
+            //---------------------------------------------------------affichage milieu
+            afficher_carte_milieu(partie);
         }
-
+    }
 }
