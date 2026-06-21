@@ -9,9 +9,9 @@
 void initialiser_paquet(Paquet *p)
 {
     int carte_num=0;
-    for (int i=0; i<NB_COULEURS; i++)
+    for (int i=1; i<=NB_COULEURS; i++)
     {
-        for (int j=0; j<TAILLE_MAX_MAIN; j++)
+        for (int j=1; j<=TAILLE_MAX_MAIN; j++)
         {
            p->carte[carte_num].couleur=i;
            p->carte[carte_num].chiffre=j;
@@ -73,6 +73,7 @@ void demande_carte_a_jouer(Partie *partie, int m)
         {
             printf("carte numero %d ?",i);  //demande quelles cartes ?
             scanf("%d",&partie->joueur[m].choix[i]);
+            calcul_num_pose(partie);
 
             if (partie->joueur[m].choix[i]-1>=0 && partie->joueur[m].choix[i]-1<=partie->joueur[m].nb_cartes) //verif que la saisie est bonne
             {
@@ -89,7 +90,7 @@ void jouer_cartes( Partie *partie, int m)
     {
         printf("quelle carte veux tu prendre dans la pile du milieu (position de la carte et non pas sa valeur)");
         scanf("%d",&choix_carte_recuperee);
-        partie->joueur[m].main[TAILLE_MAX_MAIN+1]=partie->pile_milieu.carte_posee[choix_carte_recuperee];
+        partie->joueur[m].main[TAILLE_MAX_MAIN]=partie->pile_milieu.carte_posee[choix_carte_recuperee];
     }
     //--------------------------------------------------
     int a_joue[TAILLE_MAX_MAIN]={0};  //utile pour faire la nouvelle main après avoir jouer
@@ -102,7 +103,7 @@ void jouer_cartes( Partie *partie, int m)
     }
     //------------------------------------------
      int nouvelle_taille_main=0;
-     for (int j = 0; j < partie->joueur[partie->joueur->numero_joueur].nb_cartes; j++)
+     for (int j = 0; j < partie->joueur[m].nb_cartes; j++)
     {
         if(a_joue[j]==0)    //si la carte est pas jouée alors... si elle est jouée, pas d'action donc nouvelle taille main se decale de j, donc réordonne la main
         {
@@ -110,7 +111,7 @@ void jouer_cartes( Partie *partie, int m)
             nouvelle_taille_main++;
         }
     }
-    partie->joueur[m].nb_cartes=nouvelle_taille_main +1; // +1 car il choisit une carte deja dans la pile
+    partie->joueur[m].nb_cartes=nouvelle_taille_main; // +1 car il choisit une carte deja dans la pile
 }
 
 void poser_au_millieu(Partie *partie)
@@ -130,18 +131,18 @@ int verif_conditions_de_jeu(int nb_cartes_jouees, Partie partie)
     return 0;
 }
 
-void calcul_num_pose(Partie partie)
+void calcul_num_pose(Partie *partie)
 {
     int temp;
-    for (int i=0; i<partie.pile_milieu.nb_carte_milieu; i++)
+    for (int i=0; i<partie->pile_milieu.nb_carte_milieu; i++)
     {
-        for (int j=0; j<partie.pile_milieu.nb_carte_milieu-i-1; j++)
+        for (int j=0; j<partie->pile_milieu.nb_carte_milieu-i-1; j++)
         {
-            if (partie.pile_milieu.carte_posee[j].chiffre<partie.pile_milieu.carte_posee[j+1].chiffre)
+            if (partie->pile_milieu.carte_posee[j].chiffre<partie->pile_milieu.carte_posee[j+1].chiffre)
             {
-                temp=partie.pile_milieu.carte_posee[j].chiffre;
-                partie.pile_milieu.carte_posee[j].chiffre=partie.pile_milieu.carte_posee[j+1].chiffre;
-                partie.pile_milieu.carte_posee[j].chiffre=temp;
+                temp=partie->pile_milieu.carte_posee[j].chiffre;
+                partie->pile_milieu.carte_posee[j].chiffre=partie->pile_milieu.carte_posee[j+1].chiffre;
+                partie->pile_milieu.carte_posee[j].chiffre=temp;
             }
         }
     }
@@ -489,7 +490,7 @@ void menu_jouer(Partie *partie,int m)
         printf("|                                                      |\n");
         positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
         printf("|                                                      |\n");
-        for(i=0; i<6; i++)
+        for(i=0; i<5; i++)
         {
             //color(2,0);
             positionner_curseur(3+i+CENTRE_MENU,MILLIEU_MENU);
@@ -609,7 +610,7 @@ void validation_du_mode_de_jeu_chosi(Partie *partie, int m)
         //dessiner_logo_odin(4, MILLIEU_MENU-12);
         positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
         color(1,0);
-        printf(" Vous avez choisi le mode %s, continuer ?\n", &partie->mode_de_jeu[50]);
+        printf(" Vous avez choisi le mode %s, continuer ?\n", &partie->mode_de_jeu);
         color(15,0);
         positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
         printf("|                                                      |\n");
@@ -696,7 +697,6 @@ void validation_du_mode_de_jeu_chosi(Partie *partie, int m)
             break;
     }
 }
-
 int entree_du_nombre_de_joueurs(Partie *partie)  //mettre structure joueur ici
 {
     system("cls");
@@ -882,7 +882,6 @@ void tour_de_jeu(Partie *partie)
     Paquet p;
     initialiser_paquet(&partie->paquet);
     distribuer_carte_depart(partie);
-    partie->joueur[partie->joueur->numero_joueur].nb_cartes_jouees=0;
     partie->pile_milieu.nb_carte_milieu=0;
 //-------------------------------------------------------------afficher main du joueur
     while (1)
@@ -891,16 +890,21 @@ void tour_de_jeu(Partie *partie)
         {
             //positionner_curseur(decalage, 0);
             //decalage=decalage+ESPACE_ENTRE_TOURS;
+            partie->joueur[j].nb_cartes_jouees=0;
             system("cls");
             ecartement=0;
-            for (c=0; c<partie->joueur[j].nb_cartes; c++) //ecartement des cartes
+            for (c=0; c<partie->joueur[j].nb_cartes; c++)
             {
 
                 dessiner_carte_du_jeu( 50, ecartement, partie->joueur[j].main[c].couleur, partie->joueur[j].main[c].chiffre);
                 ecartement=ecartement+PAS_ENTRE_CARTES;
             }
-            partie->pile_milieu.nb_carte_milieu=0;
-            afficher_carte_milieu(partie, j);
+            if (j>=1)
+            {
+                afficher_carte_milieu(partie, j-1);
+            }
+            else
+                afficher_carte_milieu(partie, j);
             demande_carte_a_jouer(partie, j);
             jouer_cartes(partie, j);
            // poser_au_millieu(partie);

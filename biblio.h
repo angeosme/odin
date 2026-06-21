@@ -72,7 +72,7 @@ void poser_au_millieu(Partie *partie);
 
 int verif_conditions_de_jeu(int nb_cartes_jouees, Partie partie);
 
-void calcul_num_pose(Partie partie);
+void calcul_num_pose(Partie *partie);
 
 void positionner_curseur(int ligne, int colonne);
 
