@@ -61,7 +61,7 @@ void demande_carte_a_jouer(Partie *partie, int m)
          positionner_curseur(120,0);
          printf("combien de cartes veux tu jouer ? (si tu es le 1er a jouer, joue une seule carte)");
          scanf("%d",&partie->joueur[m].nb_cartes_jouees);
-         if (partie->joueur[m].nb_cartes_jouees>=0 && partie->joueur[m].nb_cartes_jouees<=TAILLE_MAX_MAIN && partie->joueur[m].nb_cartes_jouees>=partie->pile_milieu.nb_carte_milieu && partie->joueur[m]->nb_cartes_jouees<=partie->pile_milieu.nb_carte_milieu+1)
+         if (partie->joueur[m].nb_cartes_jouees>=0 && partie->joueur[m].nb_cartes_jouees<=TAILLE_MAX_MAIN && partie->joueur[m].nb_cartes_jouees>=partie->pile_milieu.nb_carte_milieu && partie->joueur[m].nb_cartes_jouees<=partie->pile_milieu.nb_carte_milieu+1)
             {
                break;
             }
@@ -356,7 +356,7 @@ void dessiner_logo_odin(int ligne, int colonne)
     // =================================================
 }
 
-void menu_principal(Partie *partie)
+void menu_principal(Partie *partie, int m)
 {
     char menu[4][58]= {"   Jouer !                                            ","   Regles                                             ","   Credits                                            ",
                         "   Quitter                                            ",};
@@ -443,7 +443,7 @@ void menu_principal(Partie *partie)
         switch (choix)
         {
         case 1 :
-            menu_jouer(partie);
+            menu_jouer(partie, m);
             break;
 
         case 2 :
@@ -470,7 +470,7 @@ void menu_principal(Partie *partie)
 
 }
 
-void menu_jouer(Partie *partie)
+void menu_jouer(Partie *partie,int m)
 {
     char menu[5][58]= {"   Partie standard                                    ","   Partie courte                                      ","   Partie longue                                      ",
                        "   Partie express                                     ","   Retour                                             ",};
@@ -558,27 +558,27 @@ void menu_jouer(Partie *partie)
         {
         case 1 :
             strcpy(partie->mode_de_jeu,"Partie standard");
-            validation_du_mode_de_jeu_chosi(partie);
+            validation_du_mode_de_jeu_chosi(partie, m);
 
             break;
 
         case 2 :
             strcpy(partie->mode_de_jeu,"Partie courte");
-            validation_du_mode_de_jeu_chosi(partie);
+            validation_du_mode_de_jeu_chosi(partie, m);
             break;
         case 3:
 
             strcpy(partie->mode_de_jeu,"Partie longue");
-            validation_du_mode_de_jeu_chosi(partie);
+            validation_du_mode_de_jeu_chosi(partie, m);
             break;
 
         case 4:
             strcpy(partie->mode_de_jeu,"Partie express");
-            validation_du_mode_de_jeu_chosi(partie);
+            validation_du_mode_de_jeu_chosi(partie, m);
             break;
 
         case 5:
-            menu_principal(partie);
+            menu_principal(partie, m);
             break;
 
         default :
@@ -595,7 +595,7 @@ ENTRÉE DES INFORMATION DE PARTIE
 ======================================================================
 */
 
-void validation_du_mode_de_jeu_chosi(Partie *partie)
+void validation_du_mode_de_jeu_chosi(Partie *partie, int m)
 {
     char menu[5][58]= {"   Continuer                                          ","   Retour                                             "};
     int choix=0; // numéro de l'option choisie dans le menu
@@ -683,11 +683,11 @@ void validation_du_mode_de_jeu_chosi(Partie *partie)
         switch (choix)
         {
         case 1 :
-            demander_prenom(partie);
+            demander_prenom(partie, m);
              break;
 
         case 2 :
-            menu_jouer(partie);
+            menu_jouer(partie, m);
             break;
 
         default :
@@ -841,10 +841,10 @@ void transition_joueur_suivant(char nom_joueur[])
 }
 //-----------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
-void menu_complet(Partie *partie)
+void menu_complet(Partie *partie, int m)
 {//-------------------------menu d'entrée
     plein_ecran();
-    menu_principal(partie);
+    menu_principal(partie, m);
 
     dessiner_logo_odin(1,70);
     positionner_curseur(90,6);
@@ -900,12 +900,12 @@ void tour_de_jeu(Partie *partie)
                 ecartement=ecartement+PAS_ENTRE_CARTES;
             }
             partie->pile_milieu.nb_carte_milieu=0;
-            afficher_carte_milieu(partie);
-            demande_carte_a_jouer(partie);
-            jouer_cartes(partie);
+            afficher_carte_milieu(partie, j);
+            demande_carte_a_jouer(partie, j);
+            jouer_cartes(partie, j);
            // poser_au_millieu(partie);
             //---------------------------------------------------------affichage milieu
-            afficher_carte_milieu(partie);
+            afficher_carte_milieu(partie, j);
         }
     }
 }

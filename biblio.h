@@ -89,18 +89,18 @@ void dessiner_fond_carte(int ligne, int colonne);
 
 void dessiner_carte_du_jeu(int ligne,int colonne, int couleur, int valeur_carte);
 
-void afficher_carte_milieu(Partie *partie);
+void afficher_carte_milieu(Partie *partie, int m);
 
 
 // SOUS PROGRAMMES MENU
 
 void dessiner_logo_odin(int ligne, int colonne);
 
-void menu_principal(Partie *partie);
+void menu_principal(Partie *partie, int m);
 
-void menu_jouer(Partie *partie);
+void menu_jouer(Partie *partie, int m);
 
-void menu_complet(Partie *partie);
+void menu_complet(Partie *partie, int m);
 
 void menu_des_regles();
 
@@ -122,7 +122,7 @@ void transition_manche_suivante();
 
 // SOUS PROGRAMMES ENTREE INITIALES
 
-void validation_du_mode_de_jeu_chosi(Partie *partie);
+void validation_du_mode_de_jeu_chosi(Partie *partie, int m);
 
 int entree_du_nombre_de_joueurs();
 

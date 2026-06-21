@@ -107,9 +107,10 @@ TEST ENTRÉES NOM JOUEURS
 
 int main ()
 {
+    int m;
     plein_ecran();
     Partie partie;
-    menu_complet(&partie);
+    menu_complet(&partie, m);
     system("cls");
     tour_de_jeu(&partie);
 }
