@@ -1,5 +1,12 @@
 #ifndef BIBLIO_H
 #define BIBLIO_H
+//version du 21/06/2026  12h48
+
+/*
+======================================================================
+DEFINES
+======================================================================
+*/
 
 #define TAILLE_MAX_MAIN 9
 #define NB_COULEURS 6
@@ -18,6 +25,13 @@
 #define VERT 2
 #define MARRON 6
 #define JAUNE 14
+
+/*
+======================================================================
+STRUCTURES
+======================================================================
+*/
+
 typedef struct
 {
     int couleur;
@@ -58,6 +72,14 @@ typedef struct
     int conditions_fin_manche;
 }Partie;
 
+/*
+======================================================================
+PARTIE ET INITIALISATIONS
+======================================================================
+*/
+
+// SOUS PROGRAMMES PARTIE
+
 void initialiser_cartes(Carte carte[TAILLE_MAX_MAIN][NB_COULEURS]);
 
 void distribuer_carte_depart(Partie *partie);
@@ -71,6 +93,18 @@ void poser_au_millieu(Partie *partie, int nb_cartes_jouees, Carte carte_jouee[TA
 int verif_conditions_de_jeu(int nb_cartes_jouees, Partie partie);
 
 void calcul_num_pose(Partie partie);
+
+// BOUCLE PRINCIPALE
+void tour_de_jeu(Partie *partie);
+
+
+/*
+======================================================================
+AFFICHAGE ET INTERFACE
+======================================================================
+*/
+
+// SOUS PROGRAMMES ELEMENT CONCEPTUELS DE L'AFFICHAGE AVEC CARTE JEU BASIQUE
 
 void positionner_curseur(int ligne, int colonne);
 
@@ -93,6 +127,10 @@ void menu_principal();
 
 void menu_jouer();
 
+void menu_des_regles();
+
+void menu_des_credits();
+
 void menu_complet();
 
 void todo(char *s);
@@ -106,6 +144,8 @@ void transition_retour_au_menu_principal();
 
 void transition_joueur_suivant(char nom_joueur[]);
 
+void transition_manche_suivante();
+
 // SOUS PROGRAMMES ENTREE INITIALES
 
 void validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[]);
@@ -116,6 +156,8 @@ void demander_prenom();
 
 void entree_des_informations_des_joueurs(Joueur *ensemble_des_joueurs, int nb_joueurs);
 
-// boucle principale
-void tour_de_jeu(Partie *partie);
+
+
+
+
 #endif
