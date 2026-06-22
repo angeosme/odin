@@ -110,7 +110,7 @@ int main ()
     int m;
     plein_ecran();
     Partie partie;
-    menu_complet(&partie, m);
+    menu_complet(&partie);
     system("cls");
     tour_de_jeu(&partie);
 }

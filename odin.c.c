@@ -357,7 +357,7 @@ void dessiner_logo_odin(int ligne, int colonne)
     // =================================================
 }
 
-void menu_principal(Partie *partie, int m)
+void menu_principal( Partie *partie)
 {
     char menu[4][58]= {"   Jouer !                                            ","   Regles                                             ","   Credits                                            ",
                         "   Quitter                                            ",};
@@ -444,15 +444,14 @@ void menu_principal(Partie *partie, int m)
         switch (choix)
         {
         case 1 :
-            menu_jouer(partie, m);
+            menu_jouer(partie);
             break;
 
         case 2 :
-            //printf("implémenter et insérer la fonction : \n void afficher_list(S_Etudiant tab[], int nb) \n");
-            todo(" vous devez implémenter et insérer la fonction : \n\n void afficher_list(S_Etudiant tab[], int nb) \n\n\n");
+            menu_des_regles(partie);
             break;
         case 3:
-            todo(" vous devez implémenter et insérer les fonctions : \n\n int filtre_statut(int s,S_Etudiant Tab1[],int nb1,S_Etudiant Tab2[])\n\n void afficher_list(S_Etudiant tab[], int nb)  \n\n\n");
+            menu_des_credits(partie);
             break;
 
         case 4:
@@ -471,7 +470,7 @@ void menu_principal(Partie *partie, int m)
 
 }
 
-void menu_jouer(Partie *partie,int m)
+void menu_jouer(Partie *partie)
 {
     char menu[5][58]= {"   Partie standard                                    ","   Partie courte                                      ","   Partie longue                                      ",
                        "   Partie express                                     ","   Retour                                             ",};
@@ -490,7 +489,7 @@ void menu_jouer(Partie *partie,int m)
         printf("|                                                      |\n");
         positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
         printf("|                                                      |\n");
-        for(i=0; i<5; i++)
+        for(i=0; i<6; i++)
         {
             //color(2,0);
             positionner_curseur(3+i+CENTRE_MENU,MILLIEU_MENU);
@@ -558,28 +557,23 @@ void menu_jouer(Partie *partie,int m)
         switch (choix)
         {
         case 1 :
-            strcpy(partie->mode_de_jeu,"Partie standard");
-            validation_du_mode_de_jeu_chosi(partie, m);
+            validation_du_mode_de_jeu_chosi("Partie standard",1, partie);
 
             break;
 
         case 2 :
-            strcpy(partie->mode_de_jeu,"Partie courte");
-            validation_du_mode_de_jeu_chosi(partie, m);
+            validation_du_mode_de_jeu_chosi("Partie courte",2, partie);
             break;
         case 3:
-
-            strcpy(partie->mode_de_jeu,"Partie longue");
-            validation_du_mode_de_jeu_chosi(partie, m);
+            validation_du_mode_de_jeu_chosi("Partie longue",3, partie);
             break;
 
         case 4:
-            strcpy(partie->mode_de_jeu,"Partie express");
-            validation_du_mode_de_jeu_chosi(partie, m);
+            validation_du_mode_de_jeu_chosi("Partie express",4, partie);
             break;
 
         case 5:
-            menu_principal(partie, m);
+            menu_principal(partie);
             break;
 
         default :
@@ -590,13 +584,249 @@ void menu_jouer(Partie *partie,int m)
 
 }
 
+void menu_des_regles( Partie *partie)
+{
+system("cls");
+
+
+color(6,0);
+printf("========================================\n");
+printf("          REGLES DU JEU ODIN\n");
+printf("========================================\n\n");
+color(15,0);
+
+printf("COMMENT JOUER A ODIN\n\n");
+
+printf("Le jeu en bref :\n");
+printf(" - But du jeu : Etre le premier a vider sa main afin de marquer\n");
+printf("   le moins de points possible.\n");
+printf(" - Mecanique principale : Poser des cartes de valeur superieure\n");
+printf("   a celles du centre en combinant astucieusement couleurs et\n");
+printf("   chiffres.\n");
+printf(" - Condition de victoire : Le joueur ayant le moins de points\n");
+printf("   lorsque quelqu'un atteint 15 points remporte la partie.\n\n");
+
+printf("Salut ! Odin est un jeu de cartes inspire de la mythologie\n");
+printf("viking melangeant bluff, timing et strategie. Chaque carte\n");
+printf("jouee vous oblige a en recuperer une autre. Les parties sont\n");
+printf("rapides, tendues et pleines de retournements de situation.\n\n");
+
+color(6,0);
+printf("========================================\n");
+printf("MATERIEL\n");
+printf("========================================\n\n");
+color(15,0);
+
+printf("Le jeu se compose de 54 cartes numerotees de 1 a 9,\n");
+printf("reparties en 6 couleurs differentes.\n");
+printf("Il se joue de 2 a 6 joueurs, a partir de 7 ans,\n");
+printf("pour des parties d'environ 15 minutes.\n\n");
+
+color(6,0);
+printf("========================================\n");
+printf("MISE EN PLACE\n");
+printf("========================================\n\n");
+color(15,0);
+
+printf("1. Melangez les 54 cartes.\n");
+printf("2. Distribuez 9 cartes face cachee a chaque joueur.\n");
+printf("3. Chaque joueur regarde ses cartes sans les montrer.\n");
+printf("4. Designez un premier joueur au hasard.\n");
+printf("5. Les cartes restantes sont mises de cote.\n\n");
+
+color(6,0);
+printf("========================================\n");
+printf("DEROULEMENT D'UNE MANCHE\n");
+printf("========================================\n\n");
+color(15,0);
+
+
+printf("Le premier joueur pose obligatoirement une carte au centre.\n");
+printf("Cette carte devient la carte de reference.\n");
+printf("Ensuite, chaque joueur peut soit jouer, soit passer.\n\n");
+
+printf("JOUER UNE OU PLUSIEURS CARTES\n\n");
+
+printf("Pour jouer, il faut respecter trois regles :\n");
+printf(" - La valeur doit etre strictement superieure a celle du centre.\n");
+printf(" - Vous pouvez poser le meme nombre de cartes ou une de plus.\n");
+printf(" - Plusieurs cartes doivent etre de meme valeur OU de meme\n");
+printf("   couleur.\n\n");
+
+printf("La valeur d'une combinaison correspond au plus grand nombre\n");
+printf("possible obtenu en accolant les chiffres dans l'ordre\n");
+printf("decroissant.\n");
+printf("Exemple : 2 et 8 donnent 82.\n");
+printf("Exemple : 2, 4 et 9 donnent 942.\n\n");
+
+printf("Apres avoir joue, vous devez recuperer une carte parmi celles\n");
+printf("qui etaient precedemment au centre.\n");
+printf("Les autres cartes sont defaussees.\n\n");
+
+printf("Astuce : essayez de recuperer des cartes qui completeront vos\n");
+printf("combinaisons futures.\n\n");
+
+printf("PASSER\n\n");
+
+printf("Vous pouvez choisir de passer votre tour.\n");
+printf("Vous pourrez rejouer au prochain tour de jeu du meme tour.\n\n");
+
+printf("FIN D'UN TOUR\n\n");
+
+printf("Le tour se termine lorsque tous les joueurs sauf un ont passe.\n");
+printf("Les cartes restantes sont defaussees.\n");
+printf("Le dernier joueur ayant joue commence alors un nouveau tour.\n\n");
+
+color(6,0);
+printf("========================================\n");
+printf("FIN DE MANCHE\n");
+printf("========================================\n\n");
+color(15,0);
+
+printf("La manche se termine :\n");
+printf(" - lorsque vous videz votre main ;\n");
+printf(" - ou lorsque vous pouvez jouer toutes vos cartes restantes\n");
+printf("   d'un seul coup au debut d'un nouveau tour (meme valeur ou\n");
+printf("   meme couleur).\n\n");
+
+printf("Dans le cas d'une main vide, aucune carte du centre n'est\n");
+printf("recuperee.\n\n");
+
+color(6,0);
+printf("========================================\n");
+printf("COMPTAGE DES POINTS\n");
+printf("========================================\n\n");
+color(15,0);
+
+printf("A la fin de chaque manche, chaque joueur marque autant de\n");
+printf("points de penalite que de cartes restantes dans sa main.\n");
+printf("Le joueur ayant vide sa main marque 0 point.\n\n");
+
+printf("Une nouvelle manche commence avec une nouvelle distribution\n");
+printf("de 9 cartes.\n\n");
+
+color(6,0);
+printf("========================================\n");
+printf("FIN DE LA PARTIE\n");
+printf("========================================\n\n");
+color(15,0);
+
+printf("La partie s'arrete lorsqu'un joueur atteint ou depasse\n");
+printf("15 points.\n");
+printf("Le joueur ayant le moins de points remporte la victoire.\n\n");
+
+printf("Variantes :\n");
+printf(" - Partie courte : 10 points.\n");
+printf(" - Partie standard : 15 points.\n");
+printf(" - Partie longue : 20 points ou plus.\n");
+printf(" - Partie express : une seule manche.\n\n");
+
+printf("Conseil : ne gardez pas vos grosses cartes trop longtemps,\n");
+printf("car chaque carte restante vaut un point de penalite.\n\n");
+
+printf("Bon jeu et que le meilleur Viking l'emporte !\n\n");
+
+
+color(6,0);
+system("PAUSE");
+color(15,0);
+menu_principal(partie);
+
+}
+
+void menu_des_credits( Partie *partie)
+{
+
+system("cls");
+
+color(13,0);
+
+positionner_curseur(CENTRE_MENU - 25, MILLIEU_MENU);
+printf("========================================");
+
+positionner_curseur(CENTRE_MENU - 25 + 1, MILLIEU_MENU);
+printf("           A PROPOS DU PROJET");
+
+positionner_curseur(CENTRE_MENU - 25 + 2, MILLIEU_MENU);
+printf("========================================");
+
+color(15,0);
+
+positionner_curseur(CENTRE_MENU - 25 + 3, MILLIEU_MENU);
+printf("Ce jeu a ete cree par Nel HOPPE,");
+
+positionner_curseur(CENTRE_MENU - 25 + 4, MILLIEU_MENU);
+printf("Antonin DUMONT et Nolan BENOIT dans le cadre");
+
+positionner_curseur(CENTRE_MENU - 25 + 5, MILLIEU_MENU);
+printf("des rattrapages du projet d'algorithmique de");
+
+positionner_curseur(CENTRE_MENU - 25 + 6, MILLIEU_MENU);
+printf("l'ESTACA en premiere annee.");
+
+positionner_curseur(CENTRE_MENU - 25 + 7, MILLIEU_MENU);
+printf(" ");
+
+positionner_curseur(CENTRE_MENU - 25 + 8, MILLIEU_MENU);
+printf("Notre mission etait de recreer le jeu \"Odin\"");
+
+positionner_curseur(CENTRE_MENU - 25 + 9, MILLIEU_MENU);
+printf("en langage C.");
+
+positionner_curseur(CENTRE_MENU - 25 + 10, MILLIEU_MENU);
+printf(" ");
+
+positionner_curseur(CENTRE_MENU - 25 + 11, MILLIEU_MENU);
+printf("Nous disposions d'une semaine pour mener ce");
+
+positionner_curseur(CENTRE_MENU - 25 + 12, MILLIEU_MENU);
+printf("projet a bien.");
+
+positionner_curseur(CENTRE_MENU - 25 + 13, MILLIEU_MENU);
+printf(" ");
+
+positionner_curseur(CENTRE_MENU - 25 + 14, MILLIEU_MENU);
+printf("Vous pouvez retrouver, en annexe de ce projet,");
+
+positionner_curseur(CENTRE_MENU - 25 + 15, MILLIEU_MENU);
+printf("un poster presentant notre travail ainsi que");
+
+positionner_curseur(CENTRE_MENU - 25 + 16, MILLIEU_MENU);
+printf("les differentes phases de conception.");
+
+positionner_curseur(CENTRE_MENU - 25 + 17, MILLIEU_MENU);
+printf(" ");
+
+positionner_curseur(CENTRE_MENU - 25 + 18, MILLIEU_MENU);
+printf("Nous vous attendons avec plaisir lors de la");
+
+positionner_curseur(CENTRE_MENU - 25 + 19, MILLIEU_MENU);
+printf("soutenance afin de vous rencontrer en personne.");
+
+positionner_curseur(CENTRE_MENU - 25 + 20, MILLIEU_MENU);
+printf("Nous serons ravis de vous presenter le projet !");
+
+positionner_curseur(CENTRE_MENU - 25 + 21, MILLIEU_MENU);
+color(13,0);
+system("PAUSE");
+color(15,0);
+menu_principal(partie);
+
+}
+
+/*
+Les fonctions menu_des_regles et menu_des_credits étant très répétitives, nous avons été assitées par l'IA pour rendre la tâche beaucoup plus rapide ! (saut de ligne par prtintf...),
+    => c'est un simple gain de temps ici
+*/
+
+
 /*
 ======================================================================
 ENTRÉE DES INFORMATION DE PARTIE
 ======================================================================
 */
 
-void validation_du_mode_de_jeu_chosi(Partie *partie, int m)
+int validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[], int choix_de_partie,  Partie *partie)
 {
     char menu[5][58]= {"   Continuer                                          ","   Retour                                             "};
     int choix=0; // numéro de l'option choisie dans le menu
@@ -610,7 +840,7 @@ void validation_du_mode_de_jeu_chosi(Partie *partie, int m)
         //dessiner_logo_odin(4, MILLIEU_MENU-12);
         positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
         color(1,0);
-        printf(" Vous avez choisi le mode %s, continuer ?\n", &partie->mode_de_jeu);
+        printf(" Vous avez choisi le mode %s, continuer ?\n", nom_mode_de_jeu);
         color(15,0);
         positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
         printf("|                                                      |\n");
@@ -684,11 +914,11 @@ void validation_du_mode_de_jeu_chosi(Partie *partie, int m)
         switch (choix)
         {
         case 1 :
-            demander_prenom(partie, m);
-             break;
+            application_du_choix_du_mode_de_jeu(nom_mode_de_jeu, choix_de_partie, partie);
+            break;
 
         case 2 :
-            menu_jouer(partie, m);
+            menu_jouer(partie);
             break;
 
         default :
@@ -696,7 +926,38 @@ void validation_du_mode_de_jeu_chosi(Partie *partie, int m)
             system("PAUSE");
             break;
     }
+    return 0;
 }
+
+
+//INSERER LES PROGRAMMES DE LANCEMENT DE PARTIE ICI !
+//   |
+//   |
+//   v
+void application_du_choix_du_mode_de_jeu(char nom_mode_de_jeu[], int choix_de_partie, Partie *partie)
+{
+    system("cls");
+    switch(choix_de_partie)
+    {
+    case 1 :
+        printf("Nous allons lancer le mode 1 : %s",nom_mode_de_jeu);  //à completer avec les sous programme lancer_partie_...
+        demander_prenom(partie);
+        break;
+    case 2 :
+        printf("Nous allons lancer le mode 2 : %s",nom_mode_de_jeu);
+        demander_prenom(partie);
+        break;
+    case 3 :
+        printf("Nous allons lancer le mode 3 : %s",nom_mode_de_jeu);
+        demander_prenom(partie);
+        break;
+    case 4 :
+        printf("Nous allons lancer le mode 4 : %s",nom_mode_de_jeu);
+        demander_prenom(partie);
+        break;
+    }
+}
+
 int entree_du_nombre_de_joueurs(Partie *partie)  //mettre structure joueur ici
 {
     system("cls");
@@ -841,10 +1102,10 @@ void transition_joueur_suivant(char nom_joueur[])
 }
 //-----------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
-void menu_complet(Partie *partie, int m)
+void menu_complet(Partie *partie)
 {//-------------------------menu d'entrée
     plein_ecran();
-    menu_principal(partie, m);
+    menu_principal(partie);
 
     dessiner_logo_odin(1,70);
     positionner_curseur(90,6);
