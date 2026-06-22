@@ -86,11 +86,14 @@ void demande_carte_a_jouer(Partie *partie, int m)
 void jouer_cartes( Partie *partie, int m)
 {
     int choix_carte_recuperee;
+    int nouvelle_taille_main=0;
     if (partie->pile_milieu.nb_carte_milieu>0)
     {
         printf("quelle carte veux tu prendre dans la pile du milieu (position de la carte et non pas sa valeur)");
         scanf("%d",&choix_carte_recuperee);
-        partie->joueur[m].main[TAILLE_MAX_MAIN]=partie->pile_milieu.carte_posee[choix_carte_recuperee];
+        partie->joueur[m].main[nouvelle_taille_main]=partie->pile_milieu.carte_posee[choix_carte_recuperee-1];
+        nouvelle_taille_main++;
+        partie->joueur[m].nb_cartes++;
     }
     //--------------------------------------------------
     int a_joue[TAILLE_MAX_MAIN]={0};  //utile pour faire la nouvelle main après avoir jouer
@@ -103,7 +106,6 @@ void jouer_cartes( Partie *partie, int m)
         partie->pile_milieu.carte_posee[i]=partie->joueur[m].main[partie->joueur[m].choix[i]-1];
     }
     //------------------------------------------
-     int nouvelle_taille_main=0;
      for (int j = 0; j < partie->joueur[m].nb_cartes; j++)
     {
         if(a_joue[j]==0)    //si la carte est pas jouée alors... si elle est jouée, pas d'action donc nouvelle taille main se decale de j, donc réordonne la main
@@ -132,7 +134,7 @@ int verif_conditions_de_jeu(int nb_cartes_jouees, Partie partie)
     return 0;
 }
 
-void calcul_num_pose(Partie *partie)
+void calcul_num_pose(Partie *partie)  //tri a bulle
 {
     int temp;
     for (int i=0; i<partie->pile_milieu.nb_carte_milieu; i++)
