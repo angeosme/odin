@@ -94,6 +94,7 @@ void jouer_cartes( Partie *partie, int m)
     }
     //--------------------------------------------------
     int a_joue[TAILLE_MAX_MAIN]={0};  //utile pour faire la nouvelle main après avoir jouer
+    partie->pile_milieu.nb_carte_milieu=0;
     for (int i=0; i<partie->joueur[m].nb_cartes_jouees; i++)
     {
         a_joue[partie->joueur[m].choix[i]-1]=1;
@@ -275,7 +276,7 @@ void dessiner_carte_du_jeu(int ligne,int colonne, int couleur, int valeur_carte)
 void afficher_carte_milieu(Partie *partie, int m)
 {
     int ecartement_milieu=10;
-            for (int c=0; c<partie->joueur[m].nb_cartes_jouees; c++)
+            for (int c=0; c<partie->pile_milieu.nb_carte_milieu; c++)
             {
                 dessiner_carte_du_jeu( 20,ecartement_milieu, partie->pile_milieu.carte_posee[c].couleur, partie->pile_milieu.carte_posee[c].chiffre);
                 ecartement_milieu=ecartement_milieu+PAS_ENTRE_CARTES;

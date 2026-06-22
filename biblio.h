@@ -40,6 +40,8 @@ typedef struct
     int nb_cartes_jouees;
     int choix[TAILLE_MAX_MAIN];    //passe par choix
     Carte carte_jouee[TAILLE_MAX_MAIN];  //puis devient carte_jouee
+    int score_manche;
+    int score_total;
 }Joueur;
 
 typedef struct
