@@ -43,6 +43,7 @@ typedef struct
     int score_manche;
     int score_total;
     int passer_au_joueur_suivant;
+    int a_passe[1000];    //compte si le joueur a passé au tour tant
 }Joueur;
 
 typedef struct
@@ -61,7 +62,7 @@ typedef struct
     int conditions_fin_tour;
     int conditions_fin_manche;
     char mode_de_jeu[50];
-    int nb_fois_joue;
+    int nb_tour;
 }Partie;
 
 void initialiser_cartes(Carte carte[TAILLE_MAX_MAIN][NB_COULEURS]);
@@ -69,6 +70,8 @@ void initialiser_cartes(Carte carte[TAILLE_MAX_MAIN][NB_COULEURS]);
 void distribuer_carte_depart(Partie *partie);
 
 void demande_carte_a_jouer(Partie *partie, int m);
+
+int passage_au_joueur_suivant(Partie *partie,int m);
 
 void  jouer_cartes( Partie *partie, int m);
 
@@ -81,6 +84,8 @@ int calcul_num_pose(Partie *partie);
 int calcul_num_choisi(Partie *partie, int m);
 
 int verif_meme_couleur(Partie *partie, int m);
+
+int passe_consecutif(Partie *partie);
 
 void positionner_curseur(int ligne, int colonne);
 

@@ -78,7 +78,6 @@ void demande_carte_a_jouer(Partie *partie, int m)
 {
     int saisie_valide=0;
     int i;
-
     while (1)
     {
          positionner_curseur(120,0);
@@ -103,9 +102,6 @@ void demande_carte_a_jouer(Partie *partie, int m)
             }
         }
     }
-
-
-
 }
 
 void jouer_cartes( Partie *partie, int m)
@@ -141,7 +137,7 @@ void jouer_cartes( Partie *partie, int m)
     }
     partie->joueur[m].nb_cartes=nouvelle_taille_main; // +1 car il choisit une carte deja dans la pile
 
-    if ( a_recupere=1)
+    if ( a_recupere==1)
     {
         partie->joueur[m].main[nouvelle_taille_main]=partie->pile_milieu.carte_posee[choix_carte_recuperee-1];
         nouvelle_taille_main++;
@@ -220,13 +216,29 @@ int calcul_num_choisi(Partie *partie, int m)
 int verif_meme_couleur(Partie *partie, int m)
 {
     int couleur_differente=0;
-    for (int i=0; i<partie->joueur[m].nb_cartes_jouees; i++)
+    int carte_meme_valeur=1;
+    if (partie->joueur[m].nb_cartes_jouees>=2)
     {
-        if(partie->joueur[m].main[partie->joueur[m].choix[i]-1].couleur!=partie->joueur[m].main[partie->joueur[m].choix[i+1 ]-1].couleur)
+        for (int a=0; a<partie->joueur[m].nb_cartes_jouees-1; a++)     //-1 sinon on depasse le tableau
         {
-             couleur_differente=1;
+            if(partie->joueur[m].main[partie->joueur[m].choix[a]-1].chiffre!=partie->joueur[m].main[partie->joueur[m].choix[a+1 ]-1].chiffre)
+            {
+                carte_meme_valeur=0;
+            }
+        }
+        if (carte_meme_valeur==0)
+        {
+           for (int i=0; i<partie->joueur[m].nb_cartes_jouees-1; i++)
+            {
+                if(partie->joueur[m].main[partie->joueur[m].choix[i]-1].couleur!=partie->joueur[m].main[partie->joueur[m].choix[i+1 ]-1].couleur)
+                {
+                    couleur_differente=1;
+                }
+            }
         }
     }
+    return  couleur_differente;
+
 }
 
 
@@ -240,6 +252,22 @@ int verif_meme_couleur(Partie *partie, int m)
 
      return valeur_joueur > valeur_milieu;
  }
+
+int passe_consecutif(Partie *partie)
+{
+    int nb_de_passe=0;
+    for (int i=0; i<partie->nb_joueur; i++)
+    {
+        if (partie->joueur[i].a_passe[partie->nb_tour]==1)
+        {
+            nb_de_passe++;
+        }
+    }
+    return nb_de_passe;
+
+}
+
+
 /*
 ======================================================================
 DESSIN GENERAL
@@ -1092,6 +1120,11 @@ void entree_des_informations_des_joueurs(Partie *partie)
 
 }
 
+
+
+
+
+
 /*
 ======================================================================
 TRANSITIONS
@@ -1204,7 +1237,6 @@ void menu_complet(Partie *partie)
 void demander_prenom(Partie *partie)
 {
 
-
     partie->nb_joueur=entree_du_nombre_de_joueurs(partie);
 
     entree_des_informations_des_joueurs(partie);
@@ -1226,6 +1258,7 @@ void tour_de_jeu(Partie *partie)
     int j;
     int c;
     int nb_cartes_jouees;
+    partie->nb_tour=0;
     int decalage=20;
     Paquet p;
     int tour;
@@ -1235,12 +1268,9 @@ void tour_de_jeu(Partie *partie)
 //-------------------------------------------------------------afficher main du joueur
     while (1)
     {
-         for ( j=0; j<partie->nb_joueur; j++)
+        partie->joueur[j].a_passe[partie->nb_tour];
+        for ( j=0; j<partie->nb_joueur; j++)
         {
-
-
-
-
             //positionner_curseur(decalage, 0);
             //decalage=decalage+ESPACE_ENTRE_TOURS;
             tour++;
@@ -1266,31 +1296,28 @@ void tour_de_jeu(Partie *partie)
 
             if (partie->joueur[j].passer_au_joueur_suivant==0)
             {
-
             do
             {
                 demande_carte_a_jouer(partie, j);
-
-
-
-            }while (!coup_le_plus_grand(partie, j));
-
+            }while (!coup_le_plus_grand(partie, j) || (verif_meme_couleur(partie, j)!=0));
 
             jouer_cartes(partie, j);
 
            // poser_au_millieu(partie);
             //---------------------------------------------------------affichage milieu
             afficher_carte_milieu(partie, j);
-
-
+            }
+            else
+            {
+                partie->joueur[j].a_passe[partie->nb_tour]=1;
+                if (passe_consecutif(partie)>=partie->nb_joueur-1)
+                {
+                    partie->pile_milieu.nb_carte_milieu=0;
+                }
             }
 
         }
 
-
-
-
-        }
-        partie->nb_fois_joue++;
+        partie->nb_tour++;
     }
-
+}
