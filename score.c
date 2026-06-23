@@ -17,7 +17,7 @@ void calculer_scores_manche(Partie *partie)
     for(int i = 0; i < partie->nb_joueur; i++)
     {
         partie->joueur[i].score_manche = partie->joueur[i].nb_cartes;//1pt = 1carte
-        partie->joueur[i].score_total += partie->joueur[i].score_manche;
+        partie->joueur[i].score_total =  partie->joueur[i].score_total+partie->joueur[i].score_manche;
     }
 }
 
