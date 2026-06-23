@@ -12,7 +12,7 @@
 #define PAS_ENTRE_CARTES 16
 #define ESPACE_ENTRE_TOURS 80
 
-// valeur des couleurs de cartes, prÃ©cisÃ©es aussi dans la fonction color, mais rappelÃ©e pour plus de lisibilitÃ© dans le code
+// valeur des couleurs de cartes, précisées aussi dans la fonction color, mais rappelée pour plus de lisibilité dans le code
 #define BLEU 1
 #define ROUGE 4
 #define ROSE 13
@@ -23,7 +23,7 @@ typedef struct
 {
     int couleur;
     int chiffre;
-    int utilisee_tri; //0 pas utilsÃ©e et 1 utilisÃ©e
+    int utilisee_tri;//0 pas utilsée et 1 utilisée
 }Carte;
 
 typedef struct
@@ -60,6 +60,7 @@ typedef struct
     int conditions_fin_tour;
     int conditions_fin_manche;
     char mode_de_jeu[50];
+    int nb_fois_joue;
 }Partie;
 
 void initialiser_cartes(Carte carte[TAILLE_MAX_MAIN][NB_COULEURS]);
@@ -74,7 +75,11 @@ void poser_au_millieu(Partie *partie);
 
 int verif_conditions_de_jeu(int nb_cartes_jouees, Partie partie);
 
-void calcul_num_pose(Partie *partie);
+int calcul_num_pose(Partie *partie);
+
+int calcul_num_choisi(Partie *partie, int m);
+
+int verif_meme_couleur(Partie *partie, int m);
 
 void positionner_curseur(int ligne, int colonne);
 
@@ -136,5 +141,4 @@ void application_du_choix_du_mode_de_jeu(char nom_mode_de_jeu[], int choix,  Par
 void entree_des_informations_des_joueurs(Partie *partie);
 // boucle principale
 void tour_de_jeu(Partie *partie);
-int verifier_combinaison_valide(Partie *partie, int id_joueur);
 #endif

@@ -71,9 +71,8 @@ void demande_carte_a_jouer(Partie *partie, int m)
     {
         for (i=0; i<partie->joueur[m].nb_cartes_jouees; i++)
         {
-            printf("carte numero %d ?",i);  //demande quelles cartes ?
+            printf("carte numero %d ?(dans l'ordre décroissant des valeurs",i);  //demande quelles cartes ?
             scanf("%d",&partie->joueur[m].choix[i]);
-            calcul_num_pose(partie);
 
             if (partie->joueur[m].choix[i]-1>=0 && partie->joueur[m].choix[i]-1<=partie->joueur[m].nb_cartes) //verif que la saisie est bonne
             {
@@ -87,13 +86,12 @@ void jouer_cartes( Partie *partie, int m)
 {
     int choix_carte_recuperee;
     int nouvelle_taille_main=0;
+    int a_recupere=0;
     if (partie->pile_milieu.nb_carte_milieu>0)
     {
         printf("quelle carte veux tu prendre dans la pile du milieu (position de la carte et non pas sa valeur)");
         scanf("%d",&choix_carte_recuperee);
-        partie->joueur[m].main[nouvelle_taille_main]=partie->pile_milieu.carte_posee[choix_carte_recuperee-1];
-        nouvelle_taille_main++;
-        partie->joueur[m].nb_cartes++;
+        a_recupere=1;
     }
     //--------------------------------------------------
     int a_joue[TAILLE_MAX_MAIN]={0};  //utile pour faire la nouvelle main après avoir jouer
@@ -105,8 +103,9 @@ void jouer_cartes( Partie *partie, int m)
         partie->pile_milieu.nb_carte_milieu++;
         partie->pile_milieu.carte_posee[i]=partie->joueur[m].main[partie->joueur[m].choix[i]-1];
     }
+
     //------------------------------------------
-     for (int j = 0; j < partie->joueur[m].nb_cartes; j++)
+     for (int j = nouvelle_taille_main; j < partie->joueur[m].nb_cartes; j++)
     {
         if(a_joue[j]==0)    //si la carte est pas jouée alors... si elle est jouée, pas d'action donc nouvelle taille main se decale de j, donc réordonne la main
         {
@@ -115,6 +114,13 @@ void jouer_cartes( Partie *partie, int m)
         }
     }
     partie->joueur[m].nb_cartes=nouvelle_taille_main; // +1 car il choisit une carte deja dans la pile
+
+    if ( a_recupere=1)
+    {
+        partie->joueur[m].main[nouvelle_taille_main]=partie->pile_milieu.carte_posee[choix_carte_recuperee-1];
+        nouvelle_taille_main++;
+        partie->joueur[m].nb_cartes++;
+    }
 }
 
 void poser_au_millieu(Partie *partie)
@@ -134,23 +140,80 @@ int verif_conditions_de_jeu(int nb_cartes_jouees, Partie partie)
     return 0;
 }
 
-void calcul_num_pose(Partie *partie)  //tri a bulle
+int calcul_num_pose(Partie *partie)  //tri a bulle
 {
-    int temp;
+    Carte temp;
+    Carte copie[TAILLE_MAX_MAIN];
+    int valeur=0;
+    for (int k=0; k<partie->pile_milieu.nb_carte_milieu; k++)
+    {
+        copie[k]=partie->pile_milieu.carte_posee[k];               //faire copie sinon on modofie l'ordre des anciennes cartes du milieu avant meme jouer_partie
+    }
     for (int i=0; i<partie->pile_milieu.nb_carte_milieu; i++)
     {
         for (int j=0; j<partie->pile_milieu.nb_carte_milieu-i-1; j++)
         {
             if (partie->pile_milieu.carte_posee[j].chiffre<partie->pile_milieu.carte_posee[j+1].chiffre)
             {
-                temp=partie->pile_milieu.carte_posee[j].chiffre;
-                partie->pile_milieu.carte_posee[j].chiffre=partie->pile_milieu.carte_posee[j+1].chiffre;
-                partie->pile_milieu.carte_posee[j].chiffre=temp;
+                temp=copie[j];
+                copie[j]=copie[j+1];
+                copie[j+1]=temp;
             }
+        }
+    }
+     for (int l=0; l<partie->pile_milieu.nb_carte_milieu; l++)
+     {
+         valeur=valeur*10+copie[l].chiffre;    //valeur*10 pour le nombre des dizaine puis pour les unités (ex: 27.  valeur=0*10+2; valeur=2*10+7)
+     }
+     return valeur;
+}
+
+int calcul_num_choisi(Partie *partie, int m)
+{
+    Carte temp;
+    int valeur=0;
+    for (int i=0; i<partie->joueur[m].nb_cartes_jouees; i++)
+    {
+        for (int j=0; j<partie->joueur[m].nb_cartes_jouees-i-1; j++)
+        {
+            if (partie->joueur[m].main[partie->joueur[m].choix[j]-1].chiffre<partie->joueur[m].main[partie->joueur[m].choix[j+1]-1].chiffre)
+            {
+                temp=partie->joueur[m].main[partie->joueur[m].choix[j]-1];
+                partie->joueur[m].main[partie->joueur[m].choix[j]-1]=partie->joueur[m].main[partie->joueur[m].choix[j+1]-1];
+                partie->joueur[m].main[partie->joueur[m].choix[j+1]-1]=temp;
+            }
+        }
+    }
+     for (int k=0; k<partie->joueur[m].nb_cartes_jouees; k++)
+     {
+         valeur=valeur*10+ partie->joueur[m].main[partie->joueur[m].choix[k]-1].chiffre;    //valeur*10 pour le nombre des dizaine puis pour les unités (ex: 27.  valeur=0*10+2; valeur=2*10+7)
+     }
+     return valeur;
+}
+
+int verif_meme_couleur(Partie *partie, int m)
+{
+    int couleur_differente=0;
+    for (int i=0; i<partie->joueur[m].nb_cartes_jouees; i++)
+    {
+        if(partie->joueur[m].main[partie->joueur[m].choix[i]-1].couleur!=partie->joueur[m].main[partie->joueur[m].choix[i+1 ]-1].couleur)
+        {
+             couleur_differente=1;
         }
     }
 }
 
+
+ int coup_le_plus_grand(Partie *partie, int m)
+ {
+     int valeur_joueur;
+     int valeur_milieu;
+
+     valeur_milieu= calcul_num_pose(partie);
+     valeur_joueur= calcul_num_choisi(partie, m);
+
+     return valeur_joueur > valeur_milieu;
+ }
 /*
 ======================================================================
 DESSIN GENERAL
@@ -1144,6 +1207,7 @@ void tour_de_jeu(Partie *partie)
     int nb_cartes_jouees;
     int decalage=20;
     Paquet p;
+    int tour;
     initialiser_paquet(&partie->paquet);
     distribuer_carte_depart(partie);
     partie->pile_milieu.nb_carte_milieu=0;
@@ -1154,6 +1218,7 @@ void tour_de_jeu(Partie *partie)
         {
             //positionner_curseur(decalage, 0);
             //decalage=decalage+ESPACE_ENTRE_TOURS;
+            tour++;
             partie->joueur[j].nb_cartes_jouees=0;
             system("cls");
             ecartement=0;
@@ -1168,12 +1233,20 @@ void tour_de_jeu(Partie *partie)
                 afficher_carte_milieu(partie, j-1);
             }
             else
-                afficher_carte_milieu(partie, j);
-            demande_carte_a_jouer(partie, j);
+            {
+                 afficher_carte_milieu(partie, j);
+            }
+            do
+            {
+                demande_carte_a_jouer(partie, j);
+            }while (!coup_le_plus_grand(partie, j));
+
             jouer_cartes(partie, j);
+
            // poser_au_millieu(partie);
             //---------------------------------------------------------affichage milieu
             afficher_carte_milieu(partie, j);
         }
+        partie->nb_fois_joue++;
     }
 }

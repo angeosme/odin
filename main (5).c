@@ -107,7 +107,6 @@ TEST ENTRÉES NOM JOUEURS
 
 int main ()
 {
-    int m;
     plein_ecran();
     Partie partie;
     menu_complet(&partie);
