@@ -1255,6 +1255,7 @@ void demander_prenom(Partie *partie)
 void tour_de_jeu(Partie *partie)
 {
     int ecartement=0;
+    int fin_manche=0;
     int j;
     int c;
     int nb_cartes_jouees;
@@ -1268,7 +1269,6 @@ void tour_de_jeu(Partie *partie)
 //-------------------------------------------------------------afficher main du joueur
     while (1)
     {
-        partie->joueur[j].a_passe[partie->nb_tour];
         for ( j=0; j<partie->nb_joueur; j++)
         {
             //positionner_curseur(decalage, 0);
@@ -1316,8 +1316,19 @@ void tour_de_jeu(Partie *partie)
                 }
             }
 
+            if (partie->joueur[j].nb_cartes==0)
+            {
+                fin_manche=1;
+            }
+
         }
 
         partie->nb_tour++;
+
+        if(fin_manche==1)
+        {
+            break;
+        }
+
     }
 }
