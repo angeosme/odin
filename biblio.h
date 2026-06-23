@@ -42,6 +42,7 @@ typedef struct
     Carte carte_jouee[TAILLE_MAX_MAIN];  //puis devient carte_jouee
     int score_manche;
     int score_total;
+    int passer_au_joueur_suivant;
 }Joueur;
 
 typedef struct

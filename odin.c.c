@@ -52,10 +52,33 @@ void distribuer_carte_depart(Partie *partie)
     }
 }
 
+int passage_au_joueur_suivant(Partie *partie,int m)
+{
+
+    partie->joueur[m].passer_au_joueur_suivant=0;
+
+    positionner_curseur(118,0);
+    printf("Veux-tu passer ton tour ? Tape 1 pour passer. 0 sinon, (LE PREMIER JOUEUR NE PEUX PAS PASSER)");
+
+    do
+    {
+    positionner_curseur(119,0);
+    scanf("%d",&partie->joueur[m].passer_au_joueur_suivant);
+    positionner_curseur(119,0);
+    }
+    while(partie->joueur[m].passer_au_joueur_suivant < 0 || partie->joueur[m].passer_au_joueur_suivant > 1);
+
+    return partie->joueur[m].passer_au_joueur_suivant;
+
+
+
+}
+
 void demande_carte_a_jouer(Partie *partie, int m)
 {
     int saisie_valide=0;
     int i;
+
     while (1)
     {
          positionner_curseur(120,0);
@@ -80,6 +103,9 @@ void demande_carte_a_jouer(Partie *partie, int m)
             }
         }
     }
+
+
+
 }
 
 void jouer_cartes( Partie *partie, int m)
@@ -1063,13 +1089,8 @@ void entree_des_informations_des_joueurs(Partie *partie)
         partie->joueur[i].numero_joueur=i;
         a=a+2;
     }
-    plein_ecran();
+
 }
-
-
-
-
-
 
 /*
 ======================================================================
@@ -1170,7 +1191,7 @@ void transition_joueur_suivant(char nom_joueur[])
 //------------------------------------------------------------------------------------------------
 void menu_complet(Partie *partie)
 {//-------------------------menu d'entrée
-    plein_ecran();
+
     menu_principal(partie);
 
     dessiner_logo_odin(1,70);
@@ -1182,7 +1203,7 @@ void menu_complet(Partie *partie)
 
 void demander_prenom(Partie *partie)
 {
-    plein_ecran();
+
 
     partie->nb_joueur=entree_du_nombre_de_joueurs(partie);
 
@@ -1216,6 +1237,10 @@ void tour_de_jeu(Partie *partie)
     {
          for ( j=0; j<partie->nb_joueur; j++)
         {
+
+
+
+
             //positionner_curseur(decalage, 0);
             //decalage=decalage+ESPACE_ENTRE_TOURS;
             tour++;
@@ -1236,17 +1261,36 @@ void tour_de_jeu(Partie *partie)
             {
                  afficher_carte_milieu(partie, j);
             }
+
+            passage_au_joueur_suivant(partie, j);
+
+            if (partie->joueur[j].passer_au_joueur_suivant==0)
+            {
+
             do
             {
                 demande_carte_a_jouer(partie, j);
+
+
+
             }while (!coup_le_plus_grand(partie, j));
+
 
             jouer_cartes(partie, j);
 
            // poser_au_millieu(partie);
             //---------------------------------------------------------affichage milieu
             afficher_carte_milieu(partie, j);
+
+
+            }
+
+        }
+
+
+
+
         }
         partie->nb_fois_joue++;
     }
-}
+
