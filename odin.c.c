@@ -109,10 +109,12 @@ void jouer_cartes( Partie *partie, int m)
     int choix_carte_recuperee;
     int nouvelle_taille_main=0;
     int a_recupere=0;
+    Carte carte_recuperee;
     if (partie->pile_milieu.nb_carte_milieu>0)
     {
         printf("quelle carte veux tu prendre dans la pile du milieu (position de la carte et non pas sa valeur)");
         scanf("%d",&choix_carte_recuperee);
+        carte_recuperee=partie->pile_milieu.carte_posee[choix_carte_recuperee-1]; //evite d'ecraser par les cartes jouées apres ca
         a_recupere=1;
     }
     //--------------------------------------------------
@@ -139,7 +141,7 @@ void jouer_cartes( Partie *partie, int m)
 
     if ( a_recupere==1)
     {
-        partie->joueur[m].main[nouvelle_taille_main]=partie->pile_milieu.carte_posee[choix_carte_recuperee-1];
+        partie->joueur[m].main[nouvelle_taille_main]=carte_recuperee;
         nouvelle_taille_main++;
         partie->joueur[m].nb_cartes++;
     }
