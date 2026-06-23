@@ -111,8 +111,14 @@ int main ()
     Partie partie={0};
     menu_complet(&partie);
     system("cls");
+    transition_la_partie_va_commencer();
     do
     {
         tour_de_jeu(&partie);
     }while (verifier_seuil_victoire(&partie)!=1);
+
+    afficher_podium_final(&partie);
+
+
+
 }

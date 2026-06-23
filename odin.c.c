@@ -372,6 +372,81 @@ int verifier_seuil_victoire(Partie *partie)
     return 0; // 0 = personne n'a atteint la limite
 }
 
+void trier_joueurs_par_score(Partie *partie)
+{
+    // Algorithme : tri à bulles
+    Joueur temp;
+    for (int i = 0; i < partie->nb_joueur - 1; i++)
+    {
+        for (int j = 0; j < partie->nb_joueur - i - 1; j++)
+        {
+            if (partie->joueur[j].score_total> partie->joueur[j+1].score_total)
+            {
+                temp = partie->joueur[j];
+                partie->joueur[j] = partie->joueur[j+1];
+                partie->joueur[j+1] = temp;
+            }
+        }
+    }
+}
+
+
+
+void afficher_podium_final(Partie *partie)
+{
+    // trie des joueurs avant podium
+    trier_joueurs_par_score(partie);
+
+    system("cls");
+    positionner_curseur(CENTRE_MENU - 20, MILLIEU_MENU - 10);
+
+    color(14,0); // Jaune pour l'or
+    printf(" ========================================================\n");
+    positionner_curseur(CENTRE_MENU- 19, MILLIEU_MENU - 10);
+    printf(" ||               FIN DE LA PARTIE                     ||\n");
+    positionner_curseur(CENTRE_MENU - 18, MILLIEU_MENU - 10);
+    printf(" ========================================================\n");
+    color(15,0);
+
+    positionner_curseur(CENTRE_MENU - 16, MILLIEU_MENU - 10);
+    printf("   Le vainqueur est : ");
+    color(10,0);
+    printf("%s", partie->joueur[0].nom);
+    color(15,0);
+    printf(" avec %d points \n", partie->joueur[0].score_total);
+
+    positionner_curseur(CENTRE_MENU - 14, MILLIEU_MENU - 10);
+    printf("   --- CLASSEMENT COMPLET ---   \n");
+
+    int ligne_actuelle = CENTRE_MENU - 12;
+
+    for (int i = 0; i < partie->nb_joueur; i++)
+    {
+        positionner_curseur(ligne_actuelle, MILLIEU_MENU - 8);
+
+        if(i == 0) color(14,0); // 1er
+        else if (i == 1) color(7,0); // 2eme
+        else if (i == 2) color(6,0); // 3eme
+        else color(15,0); // Reste (Blanc)
+
+        printf("%d. %s - Score final : %d points", i + 1, partie->joueur[i].nom, partie->joueur[i].score_total);
+        color(15,0);
+
+        ligne_actuelle += 2;
+    }
+
+    positionner_curseur(ligne_actuelle + 2, MILLIEU_MENU - 10);
+    color(4,0);
+    printf(" ========================================================\n");
+    color(15,0);
+
+    positionner_curseur(ligne_actuelle + 4, MILLIEU_MENU - 10);
+    system("PAUSE");
+
+    transition_retour_au_menu_principal();
+    menu_principal(partie); // Retour au début du jeu
+}
+
 
 
 /*
@@ -689,7 +764,7 @@ void menu_principal( Partie *partie)
             break;
 
         default :
-            printf("Choix invalide ! merci de taper une valeur entre 1 et 12 ! \n");
+
             system("PAUSE");
             break;
     }
@@ -803,7 +878,7 @@ void menu_jouer(Partie *partie)
             break;
 
         default :
-            printf("Choix invalide ! merci de taper une valeur entre 1 et 12 ! \n");
+
             system("PAUSE");
             break;
     }
@@ -1148,7 +1223,7 @@ int validation_du_mode_de_jeu_chosi( int choix_de_partie,  Partie *partie)
             break;
 
         default :
-            printf("Choix invalide ! merci de taper une valeur entre 1 et 12 ! \n");
+
             system("PAUSE");
             break;
     }
@@ -1330,17 +1405,50 @@ void transition_joueur_suivant(char nom_joueur[])
         color(15,0);
         system("cls");
 }
+
+void transition_manche_suivante()
+{
+        system("cls");
+        positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
+        color(1,0);
+        printf(" ________________    MACHE SUIVANTE !   ________________\n");
+        color(15,0);
+        positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(4+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(5+CENTRE_MENU,MILLIEU_MENU);
+        printf("|                                                      |\n");
+        positionner_curseur(6+CENTRE_MENU,MILLIEU_MENU);
+        color(1,0);
+        printf("|______________________________________________________|\n");
+
+        for(int i = 0; i<4; i++)
+        {
+            positionner_curseur(3+CENTRE_MENU,MILLIEU_MENU);
+            printf("|                          %d                           |\n",3-i);
+            Sleep(1000);
+        }
+        color(15,0);
+        system("cls");
+}
+
+
+
 //-----------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------
+//-------------------------menu d'entrée
 void menu_complet(Partie *partie)
-{//-------------------------menu d'entrée
-
+{
     menu_principal(partie);
-
-    dessiner_logo_odin(1,70);
-    positionner_curseur(90,6);
-
+    system("PAUSE");
 }
+
+
+
+
 //-----------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
 
@@ -1362,6 +1470,7 @@ void demander_prenom(Partie *partie)
 
 
 }
+
 void tour_de_jeu(Partie *partie)
 {
     int ecartement=0;
@@ -1387,6 +1496,7 @@ void tour_de_jeu(Partie *partie)
             partie->joueur[j].nb_cartes_jouees=0;
             system("cls");
             ecartement=0;
+            transition_joueur_suivant(partie->joueur[j].nom);
             for (c=0; c<partie->joueur[j].nb_cartes; c++)
             {
 
@@ -1401,6 +1511,7 @@ void tour_de_jeu(Partie *partie)
             {
                  afficher_carte_milieu(partie, j);
             }
+
 
             passage_au_joueur_suivant(partie, j);
 
@@ -1443,4 +1554,7 @@ void tour_de_jeu(Partie *partie)
     }
     calculer_scores_manche(partie);
     afficher_scores_manche(partie);
+
+    if (partie->seuil_victoire != 1)
+    transition_manche_suivante();
 }

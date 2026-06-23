@@ -162,4 +162,8 @@ void initialisation_seuil_victoire(Partie *partie, int choix_partie);
 
 int verifier_seuil_victoire(Partie *partie);
 
+void afficher_podium_final(Partie *partie);
+
+void trier_joueurs_par_score(Partie *partie);
+
 #endif
