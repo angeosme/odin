@@ -43,7 +43,7 @@ typedef struct
     int score_manche;
     int score_total;
     int passer_au_joueur_suivant;
-    int a_passe[1000];    //compte si le joueur a passé au tour tant
+    int a_passe[1000]; //compte si le joueur a passé au tour tant
 }Joueur;
 
 typedef struct
@@ -61,7 +61,8 @@ typedef struct
     Pile_milieu pile_milieu;
     int conditions_fin_tour;
     int conditions_fin_manche;
-    char mode_de_jeu[50];
+    char nom_mode_de_jeu[50];
+    int seuil_victoire;
     int nb_tour;
 }Partie;
 
@@ -93,6 +94,8 @@ void plein_ecran();
 
 //-------------------------------------------------------
                 //Affichage
+
+void color (int couleurDuTexte, int couleurDuFond);
 
 void dessiner_formes(int ligne,int colonne,int c,int lg, int la);
 
@@ -135,16 +138,28 @@ void transition_manche_suivante();
 
 // SOUS PROGRAMMES ENTREE INITIALES
 
-int validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[], int choix_de_partie,  Partie *partie);
+int validation_du_mode_de_jeu_chosi( int choix_de_partie,  Partie *partie);
 
 int entree_du_nombre_de_joueurs();
 
 void demander_prenom(Partie *partie);
 
-void application_du_choix_du_mode_de_jeu(char nom_mode_de_jeu[], int choix,  Partie *partie);
-
+void application_du_choix_du_mode_de_jeu( int choix_partie,  Partie *partie);
 
 void entree_des_informations_des_joueurs(Partie *partie);
+
 // boucle principale
+
 void tour_de_jeu(Partie *partie);
+
+//score
+
+void calculer_scores_manche(Partie *partie);
+
+void afficher_scores_manche(Partie *partie);
+
+void initialisation_seuil_victoire(Partie *partie, int choix_partie);
+
+int verifier_seuil_victoire(Partie *partie);
+
 #endif

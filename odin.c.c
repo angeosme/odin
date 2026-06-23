@@ -267,6 +267,112 @@ int passe_consecutif(Partie *partie)
 
 }
 
+// score-------------------------------------------------------
+
+void calculer_scores_manche(Partie *partie)  //fait par nolan
+{
+    for(int i = 0; i < partie->nb_joueur; i++)
+    {
+        partie->joueur[i].score_manche = partie->joueur[i].nb_cartes;//1pt = 1carte
+        partie->joueur[i].score_total = partie->joueur[i].score_total + partie->joueur[i].score_manche;
+    }
+}
+
+void afficher_scores_manche(Partie *partie)
+{
+    system("cls");
+    positionner_curseur(CENTRE_MENU - 15, MILLIEU_MENU - 5);
+    color(14,0);
+    printf(" ____________    FIN DE LA MANCHE !    ____________\n");
+    color(15,0);
+
+    positionner_curseur(CENTRE_MENU - 14, MILLIEU_MENU - 5);
+    printf("|                                                  |\n");
+    positionner_curseur(CENTRE_MENU - 13, MILLIEU_MENU - 5);
+    printf("|         Repertoire des penalites recues :        |\n");
+    positionner_curseur(CENTRE_MENU - 12, MILLIEU_MENU - 5);
+    printf("|                                                  |\n");
+
+    int ligne_actuelle = CENTRE_MENU - 11;
+
+    for(int i = 0; i < partie->nb_joueur; i++)
+    {
+        positionner_curseur(ligne_actuelle, MILLIEU_MENU- 5);
+        if(partie->joueur[i].score_manche == 0)
+        {
+            color(10,0); //vert
+            printf("|  %s : BRAVO (0 point) -> Total : %d pts", partie->joueur[i].nom, partie->joueur[i].score_total);
+            color(15,0);
+        }
+        else
+        {
+            color(4,0); // Rouge, penalité
+            printf("|  %s : +%d point(s) -> Total : %d pts", partie->joueur[i].nom, partie->joueur[i].score_manche, partie->joueur[i].score_total);
+            color(15,0);
+        }
+
+        positionner_curseur(ligne_actuelle, MILLIEU_MENU + 46);
+        printf("|\n");
+
+        ligne_actuelle++;
+    }
+
+    positionner_curseur(ligne_actuelle, MILLIEU_MENU - 5);
+    printf("|                                                  |\n");
+    positionner_curseur(ligne_actuelle + 1, MILLIEU_MENU - 5);
+    printf("|__________________________________________________|\n");
+
+    positionner_curseur(ligne_actuelle + 3, MILLIEU_MENU - 5);
+    color(1,0);
+    printf("       *Appuyez sur une touche pour continuer* \n");
+    color(15,0);
+
+    color(0,0);
+    system("PAUSE");
+    color(15,0);
+}
+
+void initialisation_seuil_victoire(Partie *partie, int choix_partie)
+{
+    switch (choix_partie)
+    {
+        case 1:
+            strcpy(partie->nom_mode_de_jeu, "Partie standard");
+            partie->seuil_victoire = 15;
+            break;
+
+        case 2:
+            strcpy(partie->nom_mode_de_jeu, "Partie courte");
+            partie->seuil_victoire = 10;
+            break;
+
+        case 3:
+            strcpy(partie->nom_mode_de_jeu, "Partie longue");
+            partie->seuil_victoire = 20;
+            break;
+
+        case 4:
+            strcpy(partie->nom_mode_de_jeu, "Partie express");
+            partie->seuil_victoire = 1;
+            break;
+    }
+
+}
+
+int verifier_seuil_victoire(Partie *partie)
+{
+     for(int i = 0; i < partie->nb_joueur; i++)
+    {
+        if (partie->joueur[i].score_total >= partie->seuil_victoire)
+        {
+            return 1;
+        }
+    }
+
+    return 0; // 0 = personne n'a atteint la limite
+}
+
+
 
 /*
 ======================================================================
@@ -609,7 +715,7 @@ void menu_jouer(Partie *partie)
         printf("|                                                      |\n");
         positionner_curseur(2+CENTRE_MENU,MILLIEU_MENU);
         printf("|                                                      |\n");
-        for(i=0; i<6; i++)
+        for(i=0; i<5; i++)
         {
             //color(2,0);
             positionner_curseur(3+i+CENTRE_MENU,MILLIEU_MENU);
@@ -677,19 +783,19 @@ void menu_jouer(Partie *partie)
         switch (choix)
         {
         case 1 :
-            validation_du_mode_de_jeu_chosi("Partie standard",1, partie);
+            validation_du_mode_de_jeu_chosi(1, partie);
 
             break;
 
         case 2 :
-            validation_du_mode_de_jeu_chosi("Partie courte",2, partie);
+            validation_du_mode_de_jeu_chosi(2, partie);
             break;
         case 3:
-            validation_du_mode_de_jeu_chosi("Partie longue",3, partie);
+            validation_du_mode_de_jeu_chosi(3, partie);
             break;
 
         case 4:
-            validation_du_mode_de_jeu_chosi("Partie express",4, partie);
+            validation_du_mode_de_jeu_chosi(4, partie);
             break;
 
         case 5:
@@ -946,7 +1052,7 @@ ENTRÉE DES INFORMATION DE PARTIE
 ======================================================================
 */
 
-int validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[], int choix_de_partie,  Partie *partie)
+int validation_du_mode_de_jeu_chosi( int choix_de_partie,  Partie *partie)
 {
     char menu[5][58]= {"   Continuer                                          ","   Retour                                             "};
     int choix=0; // numéro de l'option choisie dans le menu
@@ -960,7 +1066,7 @@ int validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[], int choix_de_partie,
         //dessiner_logo_odin(4, MILLIEU_MENU-12);
         positionner_curseur(CENTRE_MENU,MILLIEU_MENU);
         color(1,0);
-        printf(" Vous avez choisi le mode %s, continuer ?\n", nom_mode_de_jeu);
+        printf(" Vous avez choisi le mode %s, continuer ?\n", partie->nom_mode_de_jeu);
         color(15,0);
         positionner_curseur(1+CENTRE_MENU,MILLIEU_MENU);
         printf("|                                                      |\n");
@@ -1034,7 +1140,7 @@ int validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[], int choix_de_partie,
         switch (choix)
         {
         case 1 :
-            application_du_choix_du_mode_de_jeu(nom_mode_de_jeu, choix_de_partie, partie);
+            application_du_choix_du_mode_de_jeu( choix_de_partie, partie);
             break;
 
         case 2 :
@@ -1054,25 +1160,29 @@ int validation_du_mode_de_jeu_chosi(char nom_mode_de_jeu[], int choix_de_partie,
 //   |
 //   |
 //   v
-void application_du_choix_du_mode_de_jeu(char nom_mode_de_jeu[], int choix_de_partie, Partie *partie)
+void application_du_choix_du_mode_de_jeu(int choix_partie, Partie *partie)
 {
     system("cls");
-    switch(choix_de_partie)
+    switch(choix_partie)
     {
     case 1 :
-        printf("Nous allons lancer le mode 1 : %s",nom_mode_de_jeu);  //à completer avec les sous programme lancer_partie_...
+        printf("Nous allons lancer le mode 1 : %s",partie->nom_mode_de_jeu);  //à completer avec les sous programme lancer_partie_...
+        initialisation_seuil_victoire(partie, choix_partie);
         demander_prenom(partie);
         break;
     case 2 :
-        printf("Nous allons lancer le mode 2 : %s",nom_mode_de_jeu);
+        printf("Nous allons lancer le mode 2 : %s",partie->nom_mode_de_jeu);
+        initialisation_seuil_victoire(partie, choix_partie);
         demander_prenom(partie);
         break;
     case 3 :
-        printf("Nous allons lancer le mode 3 : %s",nom_mode_de_jeu);
+        printf("Nous allons lancer le mode 3 : %s",partie->nom_mode_de_jeu);
+        initialisation_seuil_victoire(partie, choix_partie);
         demander_prenom(partie);
         break;
     case 4 :
-        printf("Nous allons lancer le mode 4 : %s",nom_mode_de_jeu);
+        printf("Nous allons lancer le mode 4 : %s",partie->nom_mode_de_jeu);
+        initialisation_seuil_victoire(partie, choix_partie);
         demander_prenom(partie);
         break;
     }
@@ -1331,4 +1441,6 @@ void tour_de_jeu(Partie *partie)
         }
 
     }
+    calculer_scores_manche(partie);
+    afficher_scores_manche(partie);
 }

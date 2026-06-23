@@ -108,8 +108,11 @@ TEST ENTRÉES NOM JOUEURS
 int main ()
 {
     plein_ecran();
-    Partie partie;
+    Partie partie={0};
     menu_complet(&partie);
     system("cls");
-    tour_de_jeu(&partie);
+    do
+    {
+        tour_de_jeu(&partie);
+    }while (verifier_seuil_victoire(&partie)!=1);
 }
